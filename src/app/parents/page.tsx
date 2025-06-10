@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -14,7 +16,7 @@ const mockParents: Parent[] = [
 ];
 
 export default function ParentsPage() {
-  // In a real app, these would be server actions
+  // In a real app, these would be server actions or client-side state updates
   const handleEditParent = (id: string) => console.log('Edit parent', id);
   const handleDeleteParent = (id: string) => console.log('Delete parent', id);
 
