@@ -35,8 +35,8 @@ export default function ChildrenPage() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
-        <div className="md:col-span-2">
+      <div className="flex flex-col gap-8"> {/* Changed from grid to flex-col */}
+        <div> {/* Children List Section */}
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline">Children List</CardTitle>
@@ -82,7 +82,7 @@ export default function ChildrenPage() {
           </Card>
         </div>
 
-        <div className="md:col-span-1">
+        <div> {/* Add New Child and Image Section */}
            <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline flex items-center">
