@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Edit3, Trash2, UserCircle2 } from 'lucide-react';
+import { PlusCircle, Edit3, Trash2 } from 'lucide-react';
 import type { Child, Parent } from '@/types';
 import AddChildForm from '@/components/children/add-child-form';
 import Image from 'next/image';
