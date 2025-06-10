@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 // Parent Schemas and Types
@@ -20,16 +21,26 @@ export const childFormSchema = z.object({
   classGrade: z.string().min(1, "Class/Grade is required."),
   photoDataUrl: z.string().optional().describe("A data URI of the child's photo. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
   parentId: z.string().uuid("Valid parent ID is required."),
+  assignedRouteId: z.string().optional(),
 });
 export type ChildFormData = z.infer<typeof childFormSchema>;
 
-export interface Child extends Omit<ChildFormData, 'photoDataUrl'>{
+export interface Child extends Omit<ChildFormData, 'photoDataUrl' | 'assignedRouteId'>{
   id: string;
   parentName?: string; // Denormalized for display
   photoDataUrl?: string; // Optional: URL or data URI of the photo
   classGrade: string;
+  assignedRouteId?: string;
+  assignedRouteName?: string;
 }
 
+// Bus Route Types
+export interface BusRoute {
+  id: string;
+  name: string;
+  pickupTime: string;
+  driverName: string;
+}
 
 // Route and Stop Types for Driver Dashboard
 export interface ChildAttendance {
@@ -38,7 +49,7 @@ export interface ChildAttendance {
   status: 'Pending' | 'Picked Up' | 'Dropped Off';
 }
 export interface RouteStop {
-  id: string;
+  id: 'stop-1' | 'stop-2' | 'stop-3' | 'stop-4'; // Made more specific for mock data
   name: string; // e.g., "123 Main St" or "Oakwood Elementary"
   time: string; // e.g., "07:15 AM"
   children: ChildAttendance[];
