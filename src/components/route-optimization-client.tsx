@@ -1,27 +1,36 @@
+
 "use client";
 
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+// zodResolver is no longer needed as the schema has been removed
+// import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input'; // Not used for textareas, but kept for consistency if needed
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { getOptimizedRoute } from '@/app/route-optimization/actions';
-import type { RouteOptimizationFormData } from '@/types';
-import { routeOptimizationSchema } from '@/types';
+// routeOptimizationSchema and RouteOptimizationFormData have been removed from @/types
+// import type { RouteOptimizationFormData } from '@/types';
+// import { routeOptimizationSchema } from '@/types';
 import type { SmartRouteOptimizationOutput } from "@/ai/flows/smart-route-optimization";
 import { Loader2, Zap, MapPinned, CalendarClock, MessageSquareQuote } from 'lucide-react';
+
+// Local type for form data now that shared type is removed
+interface RouteOptimizationFormValues {
+  currentRoute: string;
+  trafficData: string;
+  currentSchedule: string;
+}
 
 export default function RouteOptimizationClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [optimizationResult, setOptimizationResult] = useState<SmartRouteOptimizationOutput | null>(null);
   const { toast } = useToast();
 
-  const form = useForm<RouteOptimizationFormData>({
-    resolver: zodResolver(routeOptimizationSchema),
+  const form = useForm<RouteOptimizationFormValues>({
+    // resolver: zodResolver(routeOptimizationSchema), // Resolver removed
     defaultValues: {
       currentRoute: '',
       trafficData: '',
@@ -29,31 +38,26 @@ export default function RouteOptimizationClient() {
     },
   });
 
-  async function onSubmit(data: RouteOptimizationFormData) {
+  async function onSubmit(data: RouteOptimizationFormValues) {
     setIsLoading(true);
     setOptimizationResult(null);
-    form.clearErrors();
+    // form.clearErrors(); // Not strictly necessary without a resolver
 
     try {
-      const result = await getOptimizedRoute(data);
+      const result = await getOptimizedRoute(data); // data is compatible with 'any' in the action
       if (result.success && result.data) {
+        // This block is unlikely to be hit as result.data will be undefined from the modified action
         setOptimizationResult(result.data);
         toast({
           title: 'Optimization Successful',
           description: 'AI has generated route suggestions.',
         });
       } else {
-        if (result.fieldErrors) {
-          Object.entries(result.fieldErrors).forEach(([field, errors]) => {
-            if (errors && errors.length > 0) {
-              form.setError(field as keyof RouteOptimizationFormData, { type: 'manual', message: errors[0] });
-            }
-          });
-        }
+        // Field errors from the action are not expected anymore
         toast({
-          title: 'Optimization Failed',
-          description: result.error || 'An unknown error occurred.',
-          variant: 'destructive',
+          title: 'Optimization Status',
+          description: result.error || 'The Smart Route Optimization feature is currently disabled.',
+          variant: result.success ? 'default' : 'destructive',
         });
       }
     } catch (error) {
@@ -134,11 +138,11 @@ export default function RouteOptimizationClient() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Optimizing...
+                    Processing... 
                   </>
                 ) : (
                   <>
-                    <Zap className="mr-2 h-4 w-4" /> Get Optimized Route
+                    <Zap className="mr-2 h-4 w-4" /> Get Route Suggestion
                   </>
                 )}
               </Button>
@@ -147,6 +151,7 @@ export default function RouteOptimizationClient() {
         </CardContent>
       </Card>
 
+      {/* This section will likely not render as optimizationResult will remain null */}
       {optimizationResult && (
         <Card className="shadow-xl animate-fadeIn">
           <CardHeader>

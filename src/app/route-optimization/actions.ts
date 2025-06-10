@@ -1,42 +1,29 @@
+
 "use server";
 
-import { smartRouteOptimization } from "@/ai/flows/smart-route-optimization";
-import type { SmartRouteOptimizationInput, SmartRouteOptimizationOutput } from "@/ai/flows/smart-route-optimization";
-import type { RouteOptimizationFormData } from "@/types";
-import { routeOptimizationSchema } from "@/types";
+// import { smartRouteOptimization } from "@/ai/flows/smart-route-optimization"; // Flow is de-registered, AI call removed
+// import type { SmartRouteOptimizationInput, SmartRouteOptimizationOutput } from "@/ai/flows/smart-route-optimization"; // Output type not used for data return
+// import type { RouteOptimizationFormData } from "@/types"; // Type was removed from @/types
+// import { routeOptimizationSchema } from "@/types"; // Schema was removed from @/types
 
 interface ActionResult {
   success: boolean;
-  data?: SmartRouteOptimizationOutput;
+  data?: any; // Data will not be populated as feature is disabled
   error?: string;
-  fieldErrors?: Partial<Record<keyof RouteOptimizationFormData, string[]>>;
+  fieldErrors?: Record<string, string[]>; // Field errors won't be populated as no validation is done
 }
 
 export async function getOptimizedRoute(
-  formData: RouteOptimizationFormData
+  // formData type is 'any' as RouteOptimizationFormData was removed and validation is bypassed.
+  formData: any 
 ): Promise<ActionResult> {
-  const validationResult = routeOptimizationSchema.safeParse(formData);
+  // The original validation and AI call are removed as the feature is disabled.
+  // console.log("Attempted to use getOptimizedRoute with formData:", formData); // Optional: for debugging
 
-  if (!validationResult.success) {
-    return {
-      success: false,
-      error: "Invalid input data.",
-      fieldErrors: validationResult.error.flatten().fieldErrors,
-    };
-  }
-
-  const input: SmartRouteOptimizationInput = {
-    currentRoute: validationResult.data.currentRoute,
-    trafficData: validationResult.data.trafficData,
-    currentSchedule: validationResult.data.currentSchedule,
+  return {
+    success: false, // Indicating the operation itself didn't "succeed" in optimizing
+    data: null, // No data to return
+    error: "The Smart Route Optimization feature is currently disabled.",
+    fieldErrors: {}, // No field-specific errors
   };
-
-  try {
-    const output = await smartRouteOptimization(input);
-    return { success: true, data: output };
-  } catch (e) {
-    console.error("Error in smartRouteOptimization flow:", e);
-    const errorMessage = e instanceof Error ? e.message : "An unknown error occurred during route optimization.";
-    return { success: false, error: `AI processing failed: ${errorMessage}` };
-  }
 }
