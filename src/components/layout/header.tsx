@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { BusFront, Users, Smile, MapPin, Gauge } from 'lucide-react'; // Changed SteeringWheel to Gauge
+import { BusFront, Users, Smile, MapPin, Gauge } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
   { href: '/parents', label: 'Parents', icon: Users },
   { href: '/children', label: 'Children', icon: Smile },
   { href: '/tracking', label: 'Tracking', icon: MapPin },
-  { href: '/driver', label: 'Driver', icon: Gauge }, // Changed SteeringWheel to Gauge
+  { href: '/driver', label: 'Driver', icon: Gauge },
 ];
 
 export function Header() {
@@ -15,7 +15,7 @@ export function Header() {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
           <BusFront className="h-8 w-8" />
-          <span className="text-2xl font-bold font-headline">RouteRider</span>
+          <span className="text-2xl font-bold font-headline">SkoolBus</span>
         </Link>
         <nav className="hidden md:flex items-center space-x-1">
           {navItems.map((item) => (

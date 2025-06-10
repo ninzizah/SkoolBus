@@ -48,7 +48,7 @@ export default function Home() {
     <div className="container mx-auto p-4 md:p-8">
       <section className="text-center py-12 md:py-20">
         <h1 className="text-4xl md:text-5xl font-bold font-headline mb-6 text-primary">
-          Welcome to RouteRider
+          Welcome to SkoolBus
         </h1>
         <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto mb-8">
           The all-in-one platform for safe and reliable school transportation. Manage bookings, track rides, and optimize routes effortlessly.

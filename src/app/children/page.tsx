@@ -3,16 +3,16 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Edit3, Trash2, UserCircle } from 'lucide-react';
+import { PlusCircle, Edit3, Trash2, UserCircle2 } from 'lucide-react';
 import type { Child, Parent } from '@/types';
 import AddChildForm from '@/components/children/add-child-form';
 import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-// Mock data for children and parents (for the parent selection dropdown)
 const mockChildren: Child[] = [
-  { id: 'c1', name: 'Leo Wonderland', age: 7, school: 'Wonderland Elementary', parentId: '1', parentName: 'Alice Wonderland' },
-  { id: 'c2', name: 'Mia Wonderland', age: 5, school: 'Wonderland Preschool', parentId: '1', parentName: 'Alice Wonderland' },
-  { id: 'c3', name: 'Scoop The Digger', age: 8, school: 'Construction Academy', parentId: '2', parentName: 'Bob The Builder' },
+  { id: 'c1', name: 'Leo Wonderland', age: 7, school: 'Wonderland Elementary', parentId: '1', parentName: 'Alice Wonderland', classGrade: '2nd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=Leo' },
+  { id: 'c2', name: 'Mia Wonderland', age: 5, school: 'Wonderland Preschool', parentId: '1', parentName: 'Alice Wonderland', classGrade: 'Kindergarten', photoDataUrl: undefined },
+  { id: 'c3', name: 'Scoop The Digger', age: 8, school: 'Construction Academy', parentId: '2', parentName: 'Bob The Builder', classGrade: '3rd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=Scoop' },
 ];
 
 const mockParentsForSelection: Pick<Parent, 'id' | 'name'>[] = [
@@ -35,8 +35,8 @@ export default function ChildrenPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-8"> {/* Changed from grid to flex-col */}
-        <div> {/* Children List Section */}
+      <div className="flex flex-col gap-8">
+        <div> 
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline">Children List</CardTitle>
@@ -46,9 +46,11 @@ export default function ChildrenPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>Photo</TableHead>
                     <TableHead>Child Name</TableHead>
                     <TableHead>Age</TableHead>
                     <TableHead>School</TableHead>
+                    <TableHead>Class/Grade</TableHead>
                     <TableHead>Parent</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -56,12 +58,20 @@ export default function ChildrenPage() {
                 <TableBody>
                   {mockChildren.map((child) => (
                     <TableRow key={child.id}>
-                      <TableCell className="font-medium flex items-center">
-                        <UserCircle className="mr-2 h-5 w-5 text-muted-foreground" />
+                      <TableCell>
+                        <Avatar>
+                          <AvatarImage src={child.photoDataUrl} alt={child.name} data-ai-hint="child portrait" />
+                          <AvatarFallback>
+                            {child.name.substring(0,1).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      </TableCell>
+                      <TableCell className="font-medium">
                         {child.name}
                       </TableCell>
                       <TableCell>{child.age}</TableCell>
                       <TableCell>{child.school}</TableCell>
+                      <TableCell>{child.classGrade}</TableCell>
                       <TableCell>{child.parentName || 'N/A'}</TableCell>
                       <TableCell className="text-right space-x-2">
                         <Button variant="outline" size="icon" onClick={() => handleEditChild(child.id)} aria-label="Edit child">
@@ -82,7 +92,7 @@ export default function ChildrenPage() {
           </Card>
         </div>
 
-        <div> {/* Add New Child and Image Section */}
+        <div> 
            <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline flex items-center">
@@ -96,7 +106,7 @@ export default function ChildrenPage() {
           </Card>
           <Card className="mt-8 shadow-lg">
              <CardContent className="p-0">
-               <Image src="https://placehold.co/600x400.png" alt="Children playing" width={600} height={400} className="rounded-lg object-cover" data-ai-hint="children school playground" />
+               <Image src="https://placehold.co/600x400.png" alt="Children playing" width={600} height={400} className="rounded-lg object-cover" data-ai-hint="children school bus" />
             </CardContent>
           </Card>
         </div>

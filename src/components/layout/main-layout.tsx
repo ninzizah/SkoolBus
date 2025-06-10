@@ -13,7 +13,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         {children}
       </main>
       <footer className="bg-muted/50 text-muted-foreground text-center p-4 text-sm">
-        © {new Date().getFullYear()} RouteRider. All rights reserved.
+        © {new Date().getFullYear()} SkoolBus. All rights reserved.
       </footer>
     </div>
   );

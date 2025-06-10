@@ -4,7 +4,7 @@ import { MainLayout } from '@/components/layout/main-layout';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'RouteRider',
+  title: 'SkoolBus',
   description: 'Safe school transportation for children.',
 };
 

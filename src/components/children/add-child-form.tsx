@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -22,19 +23,15 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import type { ChildFormData, Parent } from '@/types';
 import { childFormSchema } from '@/types';
-import { Loader2 } from "lucide-react";
-import React from "react";
+import { Loader2, UploadCloud } from "lucide-react";
 
 interface AddChildFormProps {
-  parents: Pick<Parent, 'id' | 'name'>[]; // List of parents for selection
+  parents: Pick<Parent, 'id' | 'name'>[]; 
 }
 
-// Mock server action
 async function addChildAction(data: ChildFormData): Promise<{ success: boolean; message: string }> {
   console.log("Adding child:", data);
-  // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 1000));
-  // Simulate success/failure
   if (data.name.toLowerCase() === "error") {
     return { success: false, message: "Failed to add child due to a server error." };
   }
@@ -44,16 +41,36 @@ async function addChildAction(data: ChildFormData): Promise<{ success: boolean; 
 export default function AddChildForm({ parents }: AddChildFormProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const form = useForm<ChildFormData>({
     resolver: zodResolver(childFormSchema),
     defaultValues: {
       name: "",
-      age: undefined, // Set to undefined for coerce.number to work well with placeholder
+      age: undefined,
       school: "",
+      classGrade: "",
+      photoDataUrl: undefined,
       parentId: "",
     },
   });
+
+  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setPhotoPreview(result);
+        form.setValue("photoDataUrl", result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPhotoPreview(null);
+      form.setValue("photoDataUrl", undefined);
+    }
+  };
 
   async function onSubmit(data: ChildFormData) {
     setIsSubmitting(true);
@@ -65,6 +82,10 @@ export default function AddChildForm({ parents }: AddChildFormProps) {
           description: result.message,
         });
         form.reset();
+        setPhotoPreview(null);
+        if(fileInputRef.current) {
+          fileInputRef.current.value = ""; 
+        }
       } else {
         toast({
           title: "Error",
@@ -120,6 +141,47 @@ export default function AddChildForm({ parents }: AddChildFormProps) {
               <FormLabel>School Name</FormLabel>
               <FormControl>
                 <Input placeholder="e.g., Springfield Elementary" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="classGrade"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Class/Grade</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., 3rd Grade, Class B" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+         <FormField
+          control={form.control}
+          name="photoDataUrl" 
+          render={({ field }) => ( 
+            <FormItem>
+              <FormLabel>Photo</FormLabel>
+              <FormControl>
+                <div className="flex flex-col items-center space-y-2">
+                  {photoPreview ? (
+                    <img src={photoPreview} alt="Child preview" className="h-24 w-24 rounded-full object-cover border" />
+                  ) : (
+                    <div className="h-24 w-24 rounded-full bg-muted flex items-center justify-center border">
+                      <UploadCloud className="h-10 w-10 text-muted-foreground" />
+                    </div>
+                  )}
+                  <Input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handlePhotoChange} 
+                    className="text-sm"
+                    ref={fileInputRef}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
