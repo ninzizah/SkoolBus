@@ -64,3 +64,20 @@ export interface AssignedRoute {
   busNumber: string;
   stops: RouteStop[];
 }
+
+// Admin - School Management Schemas and Types
+export const schoolFormSchema = z.object({
+  name: z.string().min(3, "School name must be at least 3 characters."),
+  address: z.string().min(5, "Address must be at least 5 characters."),
+  contactPhone: z.string()
+    .min(10, "Phone number must be at least 10 digits.")
+    .regex(/^\+?[0-9\s-()xX.]*$/, "Invalid phone number format. Allows digits, spaces, hyphens, parentheses, dots, and 'x' for extensions."),
+  contactEmail: z.string().email("Invalid email address."),
+  // districtId: z.string().optional(), // Placeholder for future district linking
+});
+export type SchoolFormData = z.infer<typeof schoolFormSchema>;
+
+export interface School extends SchoolFormData {
+  id: string;
+  // Additional fields like schedule, calendar, zone info can be added later
+}

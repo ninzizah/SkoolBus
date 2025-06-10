@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BusFront, Users, Smile, MapPin, Gauge } from 'lucide-react';
+import { BusFront, Users, Smile, MapPin, Gauge, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
@@ -7,6 +7,7 @@ const navItems = [
   { href: '/children', label: 'Children', icon: Smile },
   { href: '/tracking', label: 'Tracking', icon: MapPin },
   { href: '/driver', label: 'Driver', icon: Gauge },
+  { href: '/admin/schools', label: 'Admin', icon: Briefcase },
 ];
 
 export function Header() {
