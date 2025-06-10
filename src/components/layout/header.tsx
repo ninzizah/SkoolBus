@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BusFront, Users, Smile, MapPin, Gauge, Route } from 'lucide-react'; // Changed SteeringWheel to Gauge
+import { BusFront, Users, Smile, MapPin, Gauge } from 'lucide-react'; // Changed SteeringWheel to Gauge
 import { Button } from '@/components/ui/button';
 
 const navItems = [
@@ -7,7 +7,6 @@ const navItems = [
   { href: '/children', label: 'Children', icon: Smile },
   { href: '/tracking', label: 'Tracking', icon: MapPin },
   { href: '/driver', label: 'Driver', icon: Gauge }, // Changed SteeringWheel to Gauge
-  { href: '/route-optimization', label: 'Optimize Route', icon: Route },
 ];
 
 export function Header() {

@@ -48,11 +48,3 @@ export interface AssignedRoute {
   busNumber: string;
   stops: RouteStop[];
 }
-
-// Smart Route Optimization Types
-export const routeOptimizationSchema = z.object({
-  currentRoute: z.string().min(10, "Current route description is too short."),
-  trafficData: z.string().min(10, "Traffic data description is too short."),
-  currentSchedule: z.string().min(10, "Current schedule description is too short."),
-});
-export type RouteOptimizationFormData = z.infer<typeof routeOptimizationSchema>;

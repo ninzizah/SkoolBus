@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, Smile, MapPin, Gauge, Route, ArrowRight } from 'lucide-react';
+import { Users, Smile, MapPin, Gauge, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 
 const features = [
@@ -36,19 +36,10 @@ const features = [
     title: 'Driver Dashboard',
     description: 'View routes, manage stops, and mark attendance.',
     href: '/driver',
-    icon: Gauge, // Replaced SteeringWheel with Gauge
+    icon: Gauge,
     bgColor: 'bg-yellow-100',
     textColor: 'text-yellow-700',
     imgHint: 'bus driver smiling'
-  },
-  {
-    title: 'Smart Route Optimization',
-    description: 'AI-powered suggestions for efficient routes and schedules.',
-    href: '/route-optimization',
-    icon: Route,
-    bgColor: 'bg-indigo-100',
-    textColor: 'text-indigo-700',
-    imgHint: 'futuristic dashboard interface'
   },
 ];
 
