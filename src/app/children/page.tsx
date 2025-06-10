@@ -5,11 +5,11 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { PlusCircle, Edit3, Trash2, Bus, Route as RouteIcon } from 'lucide-react';
-import type { Child, Parent, BusRoute } from '@/types';
+import type { Child, Parent, BusRoute, School } from '@/types';
 import AddChildForm from '@/components/children/add-child-form';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,15 +17,21 @@ import { useToast } from "@/hooks/use-toast";
 
 
 const initialMockChildren: Child[] = [
-  { id: 'c1', name: 'Leo Wonderland', age: 7, school: 'Wonderland Elementary', parentId: '1', parentName: 'Alice Wonderland', classGrade: '2nd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=Leo', assignedRouteId: undefined, assignedRouteName: undefined },
-  { id: 'c2', name: 'Mia Wonderland', age: 5, school: 'Wonderland Preschool', parentId: '1', parentName: 'Alice Wonderland', classGrade: 'Kindergarten', photoDataUrl: undefined, assignedRouteId: 'route1', assignedRouteName: 'Morning Star Route' },
-  { id: 'c3', name: 'Scoop The Digger', age: 8, school: 'Construction Academy', parentId: '2', parentName: 'Bob The Builder', classGrade: '3rd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=Scoop', assignedRouteId: undefined, assignedRouteName: undefined },
+  { id: 'c1', name: 'Leo Wonderland', age: 7, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: '1', parentName: 'Alice Wonderland', classGrade: '2nd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=Leo', assignedRouteId: undefined, assignedRouteName: undefined },
+  { id: 'c2', name: 'Mia Wonderland', age: 5, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: '1', parentName: 'Alice Wonderland', classGrade: 'Kindergarten', photoDataUrl: undefined, assignedRouteId: 'route1', assignedRouteName: 'Morning Star Route' },
+  { id: 'c3', name: 'Scoop The Digger', age: 8, schoolId: 'sch2', schoolName: 'Construction Academy', parentId: '2', parentName: 'Bob The Builder', classGrade: '3rd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=Scoop', assignedRouteId: undefined, assignedRouteName: undefined },
 ];
 
 const mockParentsForSelection: Pick<Parent, 'id' | 'name'>[] = [
   { id: '1', name: 'Alice Wonderland' },
   { id: '2', name: 'Bob The Builder' },
   { id: '3', name: 'Charlie Brown' },
+];
+
+const mockSchoolsForSelection: Pick<School, 'id' | 'name'>[] = [
+  { id: 'sch1', name: 'Wonderland Elementary' },
+  { id: 'sch2', name: 'Construction Academy' },
+  { id: 'sch3', name: 'Oakwood High' },
 ];
 
 const mockBusRoutes: BusRoute[] = [
@@ -67,7 +73,7 @@ export default function ChildrenPage() {
           description: `${selectedChildForRoute.name} has been assigned to ${route.name}.`,
         });
       }
-    } else if (selectedChildForRoute && !selectedRouteId) { // Unassigning
+    } else if (selectedChildForRoute && !selectedRouteId) { 
        setChildren(prevChildren =>
           prevChildren.map(c =>
             c.id === selectedChildForRoute.id
@@ -129,7 +135,7 @@ export default function ChildrenPage() {
                         {child.name}
                       </TableCell>
                       <TableCell>{child.age}</TableCell>
-                      <TableCell>{child.school}</TableCell>
+                      <TableCell>{child.schoolName || 'N/A'}</TableCell>
                       <TableCell>{child.classGrade}</TableCell>
                       <TableCell>{child.parentName || 'N/A'}</TableCell>
                       <TableCell>{child.assignedRouteName || <span className="text-muted-foreground italic">Not Assigned</span>}</TableCell>
@@ -164,7 +170,7 @@ export default function ChildrenPage() {
               <CardDescription>Add a child's profile to the system.</CardDescription>
             </CardHeader>
             <CardContent>
-              <AddChildForm parents={mockParentsForSelection} />
+              <AddChildForm parents={mockParentsForSelection} schools={mockSchoolsForSelection} />
             </CardContent>
           </Card>
           <Card className="mt-8 shadow-lg">
@@ -187,7 +193,7 @@ export default function ChildrenPage() {
             <div className="py-4">
               <RadioGroup
                 value={selectedRouteId}
-                onValueChange={setSelectedRouteId}
+                onValueChange={(value) => setSelectedRouteId(value === "UNASSIGN" ? undefined : value)}
                 className="space-y-2"
               >
                 <div className="flex items-center space-x-2">
@@ -219,3 +225,4 @@ export default function ChildrenPage() {
     </div>
   );
 }
+

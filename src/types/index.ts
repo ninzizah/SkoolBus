@@ -17,21 +17,23 @@ export interface Parent extends ParentFormData {
 export const childFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   age: z.coerce.number().int().positive("Age must be a positive number.").min(1, "Age must be at least 1."),
-  school: z.string().min(3, "School name is required."),
   classGrade: z.string().min(1, "Class/Grade is required."),
   photoDataUrl: z.string().optional().describe("A data URI of the child's photo. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
-  parentId: z.string().uuid("Valid parent ID is required."), // Assuming parent IDs are UUIDs
+  parentId: z.string().uuid("Valid parent ID is required."),
+  schoolId: z.string().min(1, "School selection is required."), // Changed from school to schoolId
   assignedRouteId: z.string().optional(),
 });
 export type ChildFormData = z.infer<typeof childFormSchema>;
 
-export interface Child extends Omit<ChildFormData, 'photoDataUrl' | 'assignedRouteId' | 'parentId'>{
+export interface Child extends Omit<ChildFormData, 'photoDataUrl' | 'assignedRouteId' | 'parentId' | 'schoolId'>{
   id: string;
-  parentId: string; // Keep parentId for linking
-  parentName?: string; // Denormalized for display
-  photoDataUrl?: string; // Optional: URL or data URI of the photo
+  parentId: string;
+  parentName?: string;
+  photoDataUrl?: string;
+  schoolId: string; // Added schoolId
+  schoolName?: string; // Added schoolName for display
   assignedRouteId?: string;
-  assignedRouteName?: string; // Denormalized for display
+  assignedRouteName?: string;
 }
 
 // Bus Route Types
@@ -73,11 +75,10 @@ export const schoolFormSchema = z.object({
     .min(10, "Phone number must be at least 10 digits.")
     .regex(/^\+?[0-9\s-()xX.]*$/, "Invalid phone number format. Allows digits, spaces, hyphens, parentheses, dots, and 'x' for extensions."),
   contactEmail: z.string().email("Invalid email address."),
-  // districtId: z.string().optional(), // Placeholder for future district linking
 });
 export type SchoolFormData = z.infer<typeof schoolFormSchema>;
 
 export interface School extends SchoolFormData {
   id: string;
-  // Additional fields like schedule, calendar, zone info can be added later
 }
+

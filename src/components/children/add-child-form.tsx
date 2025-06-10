@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -21,16 +22,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import type { ChildFormData, Parent } from '@/types';
+import type { ChildFormData, Parent, School } from '@/types';
 import { childFormSchema } from '@/types';
 import { Loader2, UploadCloud } from "lucide-react";
 
 interface AddChildFormProps {
-  parents: Pick<Parent, 'id' | 'name'>[]; 
+  parents: Pick<Parent, 'id' | 'name'>[];
+  schools: Pick<School, 'id' | 'name'>[]; 
 }
 
 async function addChildAction(data: ChildFormData): Promise<{ success: boolean; message: string }> {
   console.log("Adding child:", data);
+  // In a real app, you would fetch the schoolName based on schoolId here if needed before saving,
+  // or handle it on the backend. For mock, we assume schoolName is correctly passed or derived.
   await new Promise(resolve => setTimeout(resolve, 1000));
   if (data.name.toLowerCase() === "error") {
     return { success: false, message: "Failed to add child due to a server error." };
@@ -38,7 +42,7 @@ async function addChildAction(data: ChildFormData): Promise<{ success: boolean; 
   return { success: true, message: `Child ${data.name} added successfully!` };
 }
 
-export default function AddChildForm({ parents }: AddChildFormProps) {
+export default function AddChildForm({ parents, schools }: AddChildFormProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
@@ -49,10 +53,10 @@ export default function AddChildForm({ parents }: AddChildFormProps) {
     defaultValues: {
       name: "",
       age: undefined,
-      school: "",
       classGrade: "",
       photoDataUrl: undefined,
       parentId: "",
+      schoolId: "", // Initialize schoolId
     },
   });
 
@@ -75,11 +79,13 @@ export default function AddChildForm({ parents }: AddChildFormProps) {
   async function onSubmit(data: ChildFormData) {
     setIsSubmitting(true);
     try {
+      // Find selected school name for toast message (optional, could be done differently in real app)
+      const selectedSchool = schools.find(s => s.id === data.schoolId);
       const result = await addChildAction(data);
       if (result.success) {
         toast({
           title: "Success",
-          description: result.message,
+          description: `${result.message} (School: ${selectedSchool?.name || 'N/A'})`,
         });
         form.reset();
         setPhotoPreview(null);
@@ -135,13 +141,24 @@ export default function AddChildForm({ parents }: AddChildFormProps) {
         />
         <FormField
           control={form.control}
-          name="school"
+          name="schoolId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>School Name</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g., Springfield Elementary" {...field} />
-              </FormControl>
+              <FormLabel>School</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a school" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {schools.map((school) => (
+                    <SelectItem key={school.id} value={school.id}>
+                      {school.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -225,3 +242,4 @@ export default function AddChildForm({ parents }: AddChildFormProps) {
     </Form>
   );
 }
+
