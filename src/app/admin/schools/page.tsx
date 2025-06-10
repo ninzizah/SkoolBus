@@ -49,8 +49,8 @@ export default function SchoolManagementPage() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 items-start">
-        <div className="md:col-span-2">
+      <div className="flex flex-col gap-8"> {/* Changed from grid to flex-col */}
+        <div> {/* Wrapper for Registered Schools Card */}
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline">Registered Schools</CardTitle>
@@ -93,7 +93,7 @@ export default function SchoolManagementPage() {
           </Card>
         </div>
 
-        <div className="md:col-span-1 space-y-6">
+        <div className="space-y-6"> {/* Wrapper for Add New School Card and Image Card */}
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline flex items-center">
