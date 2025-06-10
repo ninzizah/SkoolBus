@@ -214,10 +214,17 @@ export default function DriverDashboardPage() {
             <CardHeader>
               <CardTitle className="font-headline flex items-center"> <BusIcon className="mr-2 h-5 w-5 text-primary" /> Route Overview</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-2">
               <p><strong>Route:</strong> {assignedRoute.routeName}</p>
               <p><strong>Total Stops:</strong> {assignedRoute.stops.length}</p>
-              <p><strong>Status:</strong> {allChildrenProcessedEntireRoute ? <Badge className="bg-green-500 text-white">Completed</Badge> : <Badge variant="outline" className="border-yellow-500 text-yellow-700">In Progress</Badge>}</p>
+              <div className="flex items-center">
+                <strong className="mr-1">Status:</strong>
+                {allChildrenProcessedEntireRoute ? (
+                  <Badge className="bg-green-500 hover:bg-green-600 text-white">Completed</Badge>
+                ) : (
+                  <Badge variant="outline" className="border-yellow-500 text-yellow-700">In Progress</Badge>
+                )}
+              </div>
               <div className="mt-4">
                 <Image src="https://placehold.co/600x300.png" alt="Simplified route map with bus icon" width={600} height={300} className="rounded-md" data-ai-hint="route map icon"/>
               </div>
@@ -238,4 +245,3 @@ export default function DriverDashboardPage() {
     </div>
   );
 }
-
