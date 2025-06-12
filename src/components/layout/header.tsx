@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { BusFront, Users, Smile, MapPin, Gauge, Briefcase, School as SchoolIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,7 +16,7 @@ export function Header() {
   return (
     <header className="bg-card shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+        <Link href="/dashboard" className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
           <BusFront className="h-8 w-8" />
           <span className="text-2xl font-bold font-headline">SkoolBus</span>
         </Link>

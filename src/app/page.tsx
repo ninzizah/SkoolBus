@@ -1,100 +1,183 @@
-import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Users, Smile, MapPin, Gauge, ArrowRight } from 'lucide-react';
-import Image from 'next/image';
 
-const features = [
-  {
-    title: 'Parent Accounts',
-    description: 'Manage parent profiles, book rides, and view history.',
-    href: '/parents',
-    icon: Users,
-    bgColor: 'bg-blue-100',
-    textColor: 'text-blue-700',
-    imgHint: 'family using tablet'
-  },
-  {
-    title: 'Child Profiles',
-    description: 'Add and manage children\'s details for safe transport.',
-    href: '/children',
-    icon: Smile,
-    bgColor: 'bg-green-100',
-    textColor: 'text-green-700',
-    imgHint: 'happy children school'
-  },
-  {
-    title: 'Real-Time Tracking',
-    description: 'Track bus location, ETA, and driver information live.',
-    href: '/tracking',
-    icon: MapPin,
-    bgColor: 'bg-purple-100',
-    textColor: 'text-purple-700',
-    imgHint: 'map navigation city'
-  },
-  {
-    title: 'Driver Dashboard',
-    description: 'View routes, manage stops, and mark attendance.',
-    href: '/driver',
-    icon: Gauge,
-    bgColor: 'bg-yellow-100',
-    textColor: 'text-yellow-700',
-    imgHint: 'bus driver smiling'
-  },
-];
+"use client";
 
-export default function Home() {
+import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import type { SignupFormData } from '@/types';
+import { signupFormSchema } from '@/types';
+import { Loader2, BusFront } from "lucide-react";
+import { useRouter } from 'next/navigation';
+
+// Mock server action for signing up a user
+async function signupUserAction(data: SignupFormData): Promise<{ success: boolean; message: string }> {
+  console.log("Signing up user:", data);
+  // Simulate API call
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  // Simulate success/failure
+  if (data.email.toLowerCase().includes("error@example.com")) {
+    return { success: false, message: "This email address is already taken or invalid." };
+  }
+  return { success: true, message: `Account for ${data.fullName} created successfully as a ${data.role}!` };
+}
+
+export default function SignupPage() {
+  const { toast } = useToast();
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const form = useForm<SignupFormData>({
+    resolver: zodResolver(signupFormSchema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      role: undefined,
+    },
+  });
+
+  async function onSubmit(data: SignupFormData) {
+    setIsSubmitting(true);
+    try {
+      const result = await signupUserAction(data);
+      if (result.success) {
+        toast({
+          title: "Sign Up Successful",
+          description: result.message,
+        });
+        // In a real app, you'd likely set some auth state here (e.g., token, user session)
+        router.push('/dashboard'); 
+      } else {
+        toast({
+          title: "Sign Up Failed",
+          description: result.message || "An unknown error occurred.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
-    <div className="container mx-auto p-4 md:p-8">
-      <section className="text-center py-12 md:py-20">
-        <h1 className="text-4xl md:text-5xl font-bold font-headline mb-6 text-primary">
-          Welcome to SkoolBus
-        </h1>
-        <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto mb-8">
-          The all-in-one platform for safe and reliable school transportation. Manage bookings, track rides, and optimize routes effortlessly.
-        </p>
-        <Image 
-          src="https://placehold.co/1200x400.png" 
-          alt="School bus illustration" 
-          width={1200} 
-          height={400} 
-          className="rounded-lg shadow-xl mx-auto mb-12"
-          data-ai-hint="school bus children" 
-        />
-        <Button size="lg" asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
-          <Link href="/parents">
-            Get Started <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
-        </Button>
-      </section>
-
-      <section className="py-12 md:py-16">
-        <h2 className="text-3xl font-bold font-headline text-center mb-12 text-primary">
-          Core Features
-        </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature) => (
-            <Card key={feature.title} className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
-              <CardHeader className="items-center text-center">
-                <div className={`p-4 rounded-full ${feature.bgColor} mb-4`}>
-                  <feature.icon className={`h-10 w-10 ${feature.textColor}`} />
-                </div>
-                <CardTitle className="font-headline text-xl">{feature.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="flex-grow text-center">
-                <CardDescription>{feature.description}</CardDescription>
-              </CardContent>
-              <div className="p-6 pt-0 mt-auto text-center">
-                <Button variant="outline" asChild className="border-primary text-primary hover:bg-primary/10">
-                  <Link href={feature.href}>
-                    Explore <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </Card>
-          ))}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center">
+          <BusFront className="mx-auto h-16 w-16 text-primary mb-4" />
+          <h1 className="text-3xl font-bold font-headline text-primary">
+            Create your SkoolBus Account
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Join SkoolBus to manage school transportation safely and efficiently.
+          </p>
         </div>
-      </section>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-card p-8 rounded-lg shadow-xl">
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Jane Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="e.g., you@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>I am a...</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="parent">Parent / Guardian</SelectItem>
+                      <SelectItem value="school_representative">School Representative</SelectItem>
+                      <SelectItem value="driver">Driver</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                "Sign Up"
+              )}
+            </Button>
+          </form>
+        </Form>
+        <p className="text-center text-sm text-muted-foreground">
+          Already have an account? <a href="#" className="font-medium text-primary hover:underline">Log In</a> (Log in not implemented)
+        </p>
+      </div>
+       <footer className="absolute bottom-0 py-4 text-muted-foreground text-sm">
+         © {new Date().getFullYear()} SkoolBus. All rights reserved.
+      </footer>
     </div>
   );
 }

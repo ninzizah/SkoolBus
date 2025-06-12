@@ -20,7 +20,7 @@ export const childFormSchema = z.object({
   classGrade: z.string().min(1, "Class/Grade is required."),
   photoDataUrl: z.string().optional().describe("A data URI of the child's photo. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
   parentId: z.string().uuid("Valid parent ID is required."),
-  schoolId: z.string().min(1, "School selection is required."), // Changed from school to schoolId
+  schoolId: z.string().min(1, "School selection is required."), 
   assignedRouteId: z.string().optional(),
 });
 export type ChildFormData = z.infer<typeof childFormSchema>;
@@ -30,8 +30,8 @@ export interface Child extends Omit<ChildFormData, 'photoDataUrl' | 'assignedRou
   parentId: string;
   parentName?: string;
   photoDataUrl?: string;
-  schoolId: string; // Added schoolId
-  schoolName?: string; // Added schoolName for display
+  schoolId: string; 
+  schoolName?: string; 
   assignedRouteId?: string;
   assignedRouteName?: string;
 }
@@ -82,3 +82,13 @@ export interface School extends SchoolFormData {
   id: string;
 }
 
+// Sign Up Schemas and Types
+export const signupFormSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters."),
+  email: z.string().email("Invalid email address."),
+  password: z.string().min(8, "Password must be at least 8 characters."),
+  role: z.enum(["parent", "school_representative", "driver"], {
+    required_error: "You must select a role.",
+  }),
+});
+export type SignupFormData = z.infer<typeof signupFormSchema>;
