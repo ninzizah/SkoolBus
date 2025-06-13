@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { MapPin, User, Clock, Bus, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
@@ -27,14 +28,14 @@ export default function TrackingPage() {
               <CardTitle className="font-headline flex items-center">
                 <MapPin className="mr-2 h-5 w-5 text-accent" /> Live Map
               </CardTitle>
-              <CardDescription>Bus current location shown on the map.</CardDescription>
+              <CardDescription>Live GPS view of the bus's current location and route.</CardDescription>
             </CardHeader>
             <CardContent className="h-full p-0">
               {/* Placeholder for map integration */}
               <div className="bg-gray-200 h-full flex items-center justify-center">
                  <Image 
                     src="https://placehold.co/800x500.png" 
-                    alt="Map placeholder" 
+                    alt="Live GPS map showing bus route and current location" 
                     width={800} 
                     height={500} 
                     className="object-cover w-full h-full"
