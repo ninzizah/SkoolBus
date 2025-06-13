@@ -11,9 +11,9 @@ import AddSchoolForm from '@/components/admin/schools/add-school-form';
 import { useToast } from '@/hooks/use-toast';
 
 const initialMockSchools: School[] = [
-  { id: 'sch1', name: 'Wonderland Elementary', address: '123 Fantasy Lane, Storyville, ST 12345', contactPhone: '555-0101', contactEmail: 'contact@wonderland.edu' },
-  { id: 'sch2', name: 'Construction Academy', address: '456 Builder Ave, Tooltown, TT 67890', contactPhone: '555-0102', contactEmail: 'info@constructionacad.org' },
-  { id: 'sch3', name: 'Oakwood High', address: '789 Knowledge Rd, Learnsville, LV 13579', contactPhone: '555-0103', contactEmail: 'admin@oakwoodhigh.com' },
+  { id: 'sch1', name: 'Wonderland Elementary', address: '123 Fantasy Lane, Storyville, ST 12345', contactPhone: '(250)-0101', contactEmail: 'contact@wonderland.edu' },
+  { id: 'sch2', name: 'Construction Academy', address: '456 Builder Ave, Tooltown, TT 67890', contactPhone: '(250)-0102', contactEmail: 'info@constructionacad.org' },
+  { id: 'sch3', name: 'Oakwood High', address: '789 Knowledge Rd, Learnsville, LV 13579', contactPhone: '(250)-0103', contactEmail: 'admin@oakwoodhigh.com' },
 ];
 
 export default function SchoolManagementPage() {
@@ -25,13 +25,30 @@ export default function SchoolManagementPage() {
   };
 
   const handleEditSchool = (id: string) => {
-    console.log('Edit school', id);
-    toast({ title: "Action Placeholder", description: "Edit functionality is not yet implemented." });
+    const schoolToEdit = schools.find(school => school.id === id);
+    if (!schoolToEdit) return;
+
+    const newName = window.prompt("Enter new school name:", schoolToEdit.name);
+    if (newName && newName.trim() !== "") {
+      setSchools(prevSchools =>
+        prevSchools.map(school =>
+          school.id === id ? { ...school, name: newName.trim() } : school
+        )
+      );
+      toast({ title: "School Updated", description: `School name changed to ${newName.trim()}.` });
+    } else if (newName === "") {
+      toast({ title: "Update Cancelled", description: "School name cannot be empty.", variant: "destructive" });
+    }
   };
 
   const handleDeleteSchool = (id: string) => {
-    console.log('Delete school', id);
-    toast({ title: "Action Placeholder", description: "Delete functionality is not yet implemented." });
+    const schoolToDelete = schools.find(school => school.id === id);
+    if (!schoolToDelete) return;
+
+    if (window.confirm(`Are you sure you want to delete ${schoolToDelete.name}?`)) {
+      setSchools(prevSchools => prevSchools.filter(school => school.id !== id));
+      toast({ title: "School Deleted", description: `${schoolToDelete.name} has been deleted.` });
+    }
   };
 
   return (
@@ -45,8 +62,8 @@ export default function SchoolManagementPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-8"> {/* Changed from grid to flex-col */}
-        <div> {/* Wrapper for Registered Schools Card */}
+      <div className="flex flex-col gap-8">
+        <div>
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline">Registered Schools</CardTitle>
@@ -89,7 +106,7 @@ export default function SchoolManagementPage() {
           </Card>
         </div>
 
-        <div className="space-y-6"> {/* Wrapper for Add New School Card */}
+        <div className="space-y-6">
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline flex items-center">

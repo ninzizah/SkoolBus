@@ -117,7 +117,7 @@ export default function AddSchoolForm({ onSchoolAdded }: AddSchoolFormProps) {
             <FormItem>
               <FormLabel>Contact Phone</FormLabel>
               <FormControl>
-                <Input type="tel" placeholder="e.g., (555) 123-4567" {...field} />
+                <Input type="tel" placeholder="e.g., (250) 123-4567" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

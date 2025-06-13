@@ -22,27 +22,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import type { ChildFormData, Parent, School } from '@/types';
+import type { Child, ChildFormData, Parent, School } from '@/types';
 import { childFormSchema } from '@/types';
 import { Loader2, UploadCloud } from "lucide-react";
 
 interface AddChildFormProps {
   parents: Pick<Parent, 'id' | 'name'>[];
-  schools: Pick<School, 'id' | 'name'>[]; 
+  schools: Pick<School, 'id' | 'name'>[];
+  onChildAdded: (child: Child) => void;
 }
 
-async function addChildAction(data: ChildFormData): Promise<{ success: boolean; message: string }> {
+async function addChildAction(data: ChildFormData): Promise<{ success: boolean; message: string, childId?: string }> {
   console.log("Adding child:", data);
-  // In a real app, you would fetch the schoolName based on schoolId here if needed before saving,
-  // or handle it on the backend. For mock, we assume schoolName is correctly passed or derived.
   await new Promise(resolve => setTimeout(resolve, 1000));
   if (data.name.toLowerCase() === "error") {
     return { success: false, message: "Failed to add child due to a server error." };
   }
-  return { success: true, message: `Child ${data.name} added successfully!` };
+  const childId = `c-${Math.random().toString(36).substring(2, 9)}`;
+  return { success: true, message: `Child ${data.name} added successfully!`, childId };
 }
 
-export default function AddChildForm({ parents, schools }: AddChildFormProps) {
+export default function AddChildForm({ parents, schools, onChildAdded }: AddChildFormProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
@@ -56,7 +56,7 @@ export default function AddChildForm({ parents, schools }: AddChildFormProps) {
       classGrade: "",
       photoDataUrl: undefined,
       parentId: "",
-      schoolId: "", // Initialize schoolId
+      schoolId: "", 
     },
   });
 
@@ -79,14 +79,22 @@ export default function AddChildForm({ parents, schools }: AddChildFormProps) {
   async function onSubmit(data: ChildFormData) {
     setIsSubmitting(true);
     try {
-      // Find selected school name for toast message (optional, could be done differently in real app)
       const selectedSchool = schools.find(s => s.id === data.schoolId);
       const result = await addChildAction(data);
-      if (result.success) {
+      if (result.success && result.childId) {
         toast({
           title: "Success",
           description: `${result.message} (School: ${selectedSchool?.name || 'N/A'})`,
         });
+        // Construct a partial Child object to pass to onChildAdded
+        // The parent component (ChildrenPage) will fill in parentName and schoolName
+        const newChildData: Child = {
+          ...data,
+          age: Number(data.age), // Ensure age is a number
+          id: result.childId,
+          // parentName and schoolName will be added by the parent component
+        };
+        onChildAdded(newChildData);
         form.reset();
         setPhotoPreview(null);
         if(fileInputRef.current) {
@@ -95,7 +103,7 @@ export default function AddChildForm({ parents, schools }: AddChildFormProps) {
       } else {
         toast({
           title: "Error",
-          description: result.message,
+          description: result.message || "An unknown error occurred.",
           variant: "destructive",
         });
       }
@@ -185,7 +193,7 @@ export default function AddChildForm({ parents, schools }: AddChildFormProps) {
               <FormControl>
                 <div className="flex flex-col items-center space-y-2">
                   {photoPreview ? (
-                    <img src={photoPreview} alt="Child preview" className="h-24 w-24 rounded-full object-cover border" />
+                    <img src={photoPreview} alt="Child preview" className="h-24 w-24 rounded-full object-cover border" data-ai-hint="child photo" />
                   ) : (
                     <div className="h-24 w-24 rounded-full bg-muted flex items-center justify-center border">
                       <UploadCloud className="h-10 w-10 text-muted-foreground" />
@@ -242,4 +250,3 @@ export default function AddChildForm({ parents, schools }: AddChildFormProps) {
     </Form>
   );
 }
-

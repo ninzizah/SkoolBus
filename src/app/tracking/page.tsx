@@ -7,10 +7,10 @@ export default function TrackingPage() {
   const mockTrackingData = {
     busId: 'SB-101',
     driverName: 'Mr. David Lee',
-    driverContact: '555-0102',
+    driverContact: '(250)-0102', // Updated phone prefix
     eta: '7 minutes',
     currentLocation: 'Approaching Elm Street',
-    lastUpdate: new Date().toLocaleTimeString(),
+    lastUpdate: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Format time
     nextStop: 'Oakwood Elementary',
   };
 
@@ -25,8 +25,6 @@ export default function TrackingPage() {
         <div className="lg:col-span-2">
           <Card className="shadow-xl h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
             <CardContent className="h-full p-0">
-              {/* Placeholder for map integration */}
-              <div className="bg-gray-200 h-full flex items-center justify-center">
                  <Image 
                     src="https://placehold.co/800x500.png" 
                     alt="Live GPS map showing bus route and current location" 
@@ -35,7 +33,6 @@ export default function TrackingPage() {
                     className="object-cover w-full h-full"
                     data-ai-hint="city route"
                   />
-              </div>
             </CardContent>
           </Card>
         </div>

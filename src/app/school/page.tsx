@@ -7,11 +7,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { School as SchoolIcon, Users, PlusCircle, Edit3, Trash2 } from 'lucide-react';
-import type { Child, School } from '@/types'; // Assuming School type is available for currentSchool
+import type { Child, School } from '@/types'; 
 import { useToast } from "@/hooks/use-toast";
 
-// Mock data for children - copied from children/page.tsx for now
-// In a real app, this would come from a backend and be filtered by the logged-in school's ID
 const allMockChildren: Child[] = [
   { id: 'c1', name: 'Leo Wonderland', age: 7, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: '2nd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=LW', assignedRouteId: undefined, assignedRouteName: undefined },
   { id: 'c2', name: 'Mia Wonderland', age: 5, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: 'Kindergarten', photoDataUrl: undefined, assignedRouteId: 'route1', assignedRouteName: 'Morning Star Route' },
@@ -20,7 +18,6 @@ const allMockChildren: Child[] = [
   { id: 'c5', name: 'Max Wonderland', age: 6, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p4', parentName: 'Diana Prince', classGrade: '1st Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=MW', assignedRouteId: 'route1', assignedRouteName: 'Morning Star Route' },
 ];
 
-// Simulate the currently logged-in school
 const currentSchool: Pick<School, 'id' | 'name'> = {
   id: 'sch1',
   name: 'Wonderland Elementary',
@@ -31,27 +28,44 @@ export default function SchoolPortalPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Filter students for the current school
     const schoolStudents = allMockChildren.filter(child => child.schoolId === currentSchool.id);
     setStudents(schoolStudents);
   }, []);
 
   const handleAddStudent = () => {
-    console.log('Add student for school:', currentSchool.name);
-    toast({ title: "Action Placeholder", description: "Add student functionality is not yet implemented." });
+    // This would ideally open a form or dialog to add a new student specific to this school.
+    // For now, it's a placeholder.
+    toast({ title: "Action Placeholder", description: `Add student functionality for ${currentSchool.name} is not yet implemented.` });
   };
 
   const handleEditStudent = (studentId: string) => {
-    console.log('Edit student:', studentId, 'for school:', currentSchool.name);
-    toast({ title: "Action Placeholder", description: "Edit student functionality is not yet implemented." });
+    const studentToEdit = students.find(student => student.id === studentId);
+    if (!studentToEdit) return;
+
+    const newName = window.prompt("Enter new student name:", studentToEdit.name);
+    if (newName && newName.trim() !== "") {
+      setStudents(prevStudents =>
+        prevStudents.map(student =>
+          student.id === studentId ? { ...student, name: newName.trim() } : student
+        )
+      );
+      // Note: This only updates the local 'students' state for this page.
+      // To update 'allMockChildren' or a central store would require more complex state management.
+      toast({ title: "Student Updated", description: `Student's name changed to ${newName.trim()}.` });
+    } else if (newName === "") {
+      toast({ title: "Update Cancelled", description: "Student name cannot be empty.", variant: "destructive" });
+    }
   };
 
   const handleDeleteStudent = (studentId: string) => {
-    console.log('Delete student:', studentId, 'for school:', currentSchool.name);
-    // Locally remove for demo, in real app this would be an API call
-    // setStudents(prevStudents => prevStudents.filter(s => s.id !== studentId));
-    // toast({ title: "Student Removed (Locally)", description: "Student has been removed from this list." });
-    toast({ title: "Action Placeholder", description: "Delete student functionality is not yet implemented." });
+    const studentToDelete = students.find(student => student.id === studentId);
+    if (!studentToDelete) return;
+
+    if (window.confirm(`Are you sure you want to remove ${studentToDelete.name} from ${currentSchool.name}?`)) {
+      setStudents(prevStudents => prevStudents.filter(s => s.id !== studentId));
+      // Note: This only updates the local 'students' state.
+      toast({ title: "Student Removed", description: `${studentToDelete.name} has been removed from this list.` });
+    }
   };
 
   return (
@@ -119,7 +133,6 @@ export default function SchoolPortalPage() {
         </CardContent>
       </Card>
 
-      {/* Placeholder for other school admin features */}
       <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
          <Card className="shadow-md">
             <CardHeader>

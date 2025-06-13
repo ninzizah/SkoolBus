@@ -46,8 +46,43 @@ export default function ChildrenPage() {
   const [isAssignRouteDialogOpen, setIsAssignRouteDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const handleEditChild = (id: string) => console.log('Edit child', id);
-  const handleDeleteChild = (id: string) => console.log('Delete child', id);
+  const handleAddChild = (newChild: Child) => {
+    const parent = mockParentsForSelection.find(p => p.id === newChild.parentId);
+    const school = mockSchoolsForSelection.find(s => s.id === newChild.schoolId);
+    const childWithDetails = {
+      ...newChild,
+      parentName: parent?.name,
+      schoolName: school?.name,
+    };
+    setChildren(prevChildren => [...prevChildren, childWithDetails]);
+  };
+
+  const handleEditChild = (id: string) => {
+    const childToEdit = children.find(child => child.id === id);
+    if (!childToEdit) return;
+
+    const newName = window.prompt("Enter new child name:", childToEdit.name);
+    if (newName && newName.trim() !== "") {
+      setChildren(prevChildren =>
+        prevChildren.map(child =>
+          child.id === id ? { ...child, name: newName.trim() } : child
+        )
+      );
+      toast({ title: "Child Updated", description: `Child's name changed to ${newName.trim()}.` });
+    } else if (newName === "") {
+      toast({ title: "Update Cancelled", description: "Child's name cannot be empty.", variant: "destructive" });
+    }
+  };
+
+  const handleDeleteChild = (id: string) => {
+    const childToDelete = children.find(child => child.id === id);
+    if (!childToDelete) return;
+
+    if (window.confirm(`Are you sure you want to delete ${childToDelete.name}'s profile?`)) {
+      setChildren(prevChildren => prevChildren.filter(child => child.id !== id));
+      toast({ title: "Child Deleted", description: `${childToDelete.name}'s profile has been deleted.` });
+    }
+  };
 
   const openAssignRouteDialog = (child: Child) => {
     setSelectedChildForRoute(child);
@@ -159,7 +194,7 @@ export default function ChildrenPage() {
               <CardDescription>Add a child's profile to the system.</CardDescription>
             </CardHeader>
             <CardContent>
-              <AddChildForm parents={mockParentsForSelection} schools={mockSchoolsForSelection} />
+              <AddChildForm parents={mockParentsForSelection} schools={mockSchoolsForSelection} onChildAdded={handleAddChild} />
             </CardContent>
           </Card>
         </div>

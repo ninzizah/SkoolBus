@@ -1,6 +1,7 @@
 
 "use client";
 
+import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,10 @@ import { useToast } from "@/hooks/use-toast";
 import type { ParentFormData } from '@/types';
 import { parentFormSchema } from '@/types';
 import { Loader2 } from "lucide-react";
-import React from "react";
+
+interface AddParentFormProps {
+  onParentAdded: (parentData: ParentFormData) => void;
+}
 
 // Mock server action
 async function addParentAction(data: ParentFormData): Promise<{ success: boolean; message: string }> {
@@ -33,7 +37,7 @@ async function addParentAction(data: ParentFormData): Promise<{ success: boolean
 }
 
 
-export default function AddParentForm() {
+export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -56,6 +60,7 @@ export default function AddParentForm() {
           title: "Success",
           description: result.message,
         });
+        onParentAdded(data); // Call the callback prop
         form.reset();
       } else {
         toast({
@@ -111,7 +116,7 @@ export default function AddParentForm() {
             <FormItem>
               <FormLabel>Phone Number (Optional)</FormLabel>
               <FormControl>
-                <Input type="tel" placeholder="e.g., (555) 123-4567" {...field} />
+                <Input type="tel" placeholder="e.g., (250) 123-4567" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -144,4 +149,3 @@ export default function AddParentForm() {
     </Form>
   );
 }
-
