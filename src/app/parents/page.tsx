@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { PlusCircle, Edit3, Trash2 } from 'lucide-react';
 import type { Parent } from '@/types';
 import AddParentForm from '@/components/parents/add-parent-form';
-import Image from 'next/image';
 
 // Mock data for parents
 const mockParents: Parent[] = [
@@ -83,11 +82,6 @@ export default function ParentsPage() {
             </CardHeader>
             <CardContent>
               <AddParentForm />
-            </CardContent>
-          </Card>
-          <Card className="mt-8 shadow-lg">
-            <CardContent className="p-0">
-               <Image src="https://placehold.co/600x400.png" alt="Parents illustration" width={600} height={400} className="rounded-lg object-cover" data-ai-hint="parents children family" />
             </CardContent>
           </Card>
         </div>

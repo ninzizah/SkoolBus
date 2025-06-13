@@ -9,7 +9,6 @@ import { Building, PlusCircle, Edit3, Trash2 } from 'lucide-react';
 import type { School, SchoolFormData } from '@/types';
 import AddSchoolForm from '@/components/admin/schools/add-school-form';
 import { useToast } from '@/hooks/use-toast';
-import Image from 'next/image';
 
 const initialMockSchools: School[] = [
   { id: 'sch1', name: 'Wonderland Elementary', address: '123 Fantasy Lane, Storyville, ST 12345', contactPhone: '555-0101', contactEmail: 'contact@wonderland.edu' },
@@ -32,9 +31,6 @@ export default function SchoolManagementPage() {
 
   const handleDeleteSchool = (id: string) => {
     console.log('Delete school', id);
-    // For demo, actually remove from list:
-    // setSchools(prevSchools => prevSchools.filter(school => school.id !== id));
-    // toast({ title: "School Deleted", description: "School has been removed (locally)." });
     toast({ title: "Action Placeholder", description: "Delete functionality is not yet implemented." });
   };
 
@@ -93,7 +89,7 @@ export default function SchoolManagementPage() {
           </Card>
         </div>
 
-        <div className="space-y-6"> {/* Wrapper for Add New School Card and Image Card */}
+        <div className="space-y-6"> {/* Wrapper for Add New School Card */}
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline flex items-center">
@@ -103,11 +99,6 @@ export default function SchoolManagementPage() {
             </CardHeader>
             <CardContent>
               <AddSchoolForm onSchoolAdded={handleAddSchool} />
-            </CardContent>
-          </Card>
-          <Card className="shadow-lg">
-             <CardContent className="p-0">
-               <Image src="https://placehold.co/600x400.png" alt="School building illustration" width={600} height={400} className="rounded-lg object-cover" data-ai-hint="school building modern"/>
             </CardContent>
           </Card>
         </div>

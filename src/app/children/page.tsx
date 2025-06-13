@@ -11,8 +11,6 @@ import { Label } from "@/components/ui/label";
 import { PlusCircle, Edit3, Trash2, Bus, Route as RouteIcon } from 'lucide-react';
 import type { Child, Parent, BusRoute, School } from '@/types';
 import AddChildForm from '@/components/children/add-child-form';
-import Image from 'next/image';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 
 
@@ -110,7 +108,6 @@ export default function ChildrenPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Photo</TableHead>
                     <TableHead>Child Name</TableHead>
                     <TableHead>Age</TableHead>
                     <TableHead>School</TableHead>
@@ -123,14 +120,6 @@ export default function ChildrenPage() {
                 <TableBody>
                   {children.map((child) => (
                     <TableRow key={child.id}>
-                      <TableCell>
-                        <Avatar>
-                          <AvatarImage src={child.photoDataUrl} alt={child.name} data-ai-hint="child portrait" />
-                          <AvatarFallback>
-                            {child.name.substring(0,1).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
                       <TableCell className="font-medium">
                         {child.name}
                       </TableCell>
@@ -171,11 +160,6 @@ export default function ChildrenPage() {
             </CardHeader>
             <CardContent>
               <AddChildForm parents={mockParentsForSelection} schools={mockSchoolsForSelection} />
-            </CardContent>
-          </Card>
-          <Card className="mt-8 shadow-lg">
-             <CardContent className="p-0">
-               <Image src="https://placehold.co/600x400.png" alt="Children playing" width={600} height={400} className="rounded-lg object-cover" data-ai-hint="children school bus"/>
             </CardContent>
           </Card>
         </div>
@@ -225,4 +209,3 @@ export default function ChildrenPage() {
     </div>
   );
 }
-
