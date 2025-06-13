@@ -24,18 +24,12 @@ export default function TrackingPage() {
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <Card className="shadow-xl h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
-            <CardHeader>
-              <CardTitle className="font-headline flex items-center">
-                <MapPin className="mr-2 h-5 w-5 text-accent" /> Current Bus Location
-              </CardTitle>
-              <CardDescription>Live GPS view of the bus's current location and route.</CardDescription>
-            </CardHeader>
             <CardContent className="h-full p-0">
               {/* Placeholder for map integration */}
               <div className="bg-gray-200 h-full flex items-center justify-center">
                  <Image 
                     src="https://placehold.co/800x500.png" 
-                    alt="Live GPS view showing bus route and current location" 
+                    alt="Live GPS map showing bus route and current location" 
                     width={800} 
                     height={500} 
                     className="object-cover w-full h-full"
