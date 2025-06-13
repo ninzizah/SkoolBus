@@ -23,7 +23,7 @@ export function Header() {
         <nav className="hidden md:flex items-center space-x-1">
           {navItems.map((item) => (
             <Button key={item.href} variant="ghost" asChild>
-              <Link href={item.href} className="flex items-center gap-2">
+              <Link href={item.href} className="flex items-center gap-2 text-foreground">
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>
