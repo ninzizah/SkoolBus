@@ -107,7 +107,13 @@ export default function SignupPage() {
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="e.g., Jane Doe" {...field} autoComplete="name" />
+                    <Input 
+                      type="text" 
+                      placeholder="e.g., Jane Doe" 
+                      {...field} 
+                      autoComplete="name" 
+                      suppressHydrationWarning 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,7 +126,13 @@ export default function SignupPage() {
                 <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="e.g., you@example.com" {...field} autoComplete="email" />
+                    <Input 
+                      type="email" 
+                      placeholder="e.g., you@example.com" 
+                      {...field} 
+                      autoComplete="email" 
+                      suppressHydrationWarning 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -133,7 +145,13 @@ export default function SignupPage() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} autoComplete="new-password" />
+                    <Input 
+                      type="password" 
+                      placeholder="••••••••" 
+                      {...field} 
+                      autoComplete="new-password" 
+                      suppressHydrationWarning 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
