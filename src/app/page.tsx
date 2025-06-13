@@ -24,7 +24,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import type { SignupFormData } from '@/types';
 import { signupFormSchema } from '@/types';
-import { Loader2, BusFront, Settings } from "lucide-react";
+import { Loader2, BusFront } from "lucide-react"; // Removed Settings icon
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
 
@@ -83,13 +83,6 @@ export default function SignupPage() {
       setIsSubmitting(false);
     }
   }
-
-  const handleAccountSettingsClick = () => {
-    toast({
-      title: "Coming Soon!",
-      description: "Account and Settings feature will be available soon.",
-    });
-  };
 
   const handleForgotPasswordClick = () => {
     const email = window.prompt("Please enter your email address to reset your password:");
@@ -221,12 +214,7 @@ export default function SignupPage() {
           </form>
         </Form>
 
-        <div className="mt-6 text-center">
-            <Button variant="outline" onClick={handleAccountSettingsClick} className="w-full md:w-auto">
-                <Settings className="mr-2 h-4 w-4" />
-                Account &amp; Settings
-            </Button>
-        </div>
+        {/* Removed Account & Settings button from here */}
 
         <div className="text-center text-sm text-muted-foreground space-y-1">
             <p>

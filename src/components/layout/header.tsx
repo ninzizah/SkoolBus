@@ -1,7 +1,10 @@
 
+"use client";
+
 import Link from 'next/link';
-import { BusFront, Users, Smile, MapPin, Gauge, Briefcase, School as SchoolIcon } from 'lucide-react';
+import { BusFront, Users, Smile, MapPin, Gauge, Briefcase, School as SchoolIcon, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useToast } from "@/hooks/use-toast";
 
 const navItems = [
   { href: '/parents', label: 'Parents', icon: Users },
@@ -13,6 +16,15 @@ const navItems = [
 ];
 
 export function Header() {
+  const { toast } = useToast();
+
+  const handleAccountSettingsClick = () => {
+    toast({
+      title: "Feature Coming Soon!",
+      description: "Account & Settings functionality will be available in a future update.",
+    });
+  };
+
   return (
     <header className="bg-card shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -20,22 +32,29 @@ export function Header() {
           <BusFront className="h-8 w-8" />
           <span className="text-2xl font-bold font-headline">SkoolBus</span>
         </Link>
-        <nav className="hidden md:flex items-center space-x-1">
-          {navItems.map((item) => (
-            <Button key={item.href} variant="ghost" asChild>
-              <Link href={item.href} className="flex items-center gap-2 text-foreground">
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </Link>
-            </Button>
-          ))}
-        </nav>
-        {/* Mobile Menu Trigger (optional, can be added later) */}
-        {/* <div className="md:hidden">
-          <Button variant="ghost" size="icon">
-            <Menu className="h-6 w-6" />
+        
+        <div className="flex items-center space-x-2">
+          <nav className="hidden md:flex items-center space-x-1">
+            {navItems.map((item) => (
+              <Button key={item.href} variant="ghost" asChild>
+                <Link href={item.href} className="flex items-center gap-2 text-foreground">
+                  <item.icon className="h-4 w-4" />
+                  {item.label}
+                </Link>
+              </Button>
+            ))}
+          </nav>
+
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={handleAccountSettingsClick} 
+            aria-label="Account and Settings"
+          >
+            <Settings className="h-5 w-5" />
           </Button>
-        </div> */}
+        </div>
+
       </div>
     </header>
   );
