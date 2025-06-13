@@ -77,21 +77,21 @@ export default function LoginPage() {
 
   const handleForgotPasswordClick = () => {
     const email = window.prompt("Please enter your email address to reset your password:");
-    if (email && email.trim() !== "") {
+    if (email === null) { // User clicked Cancel
       toast({
-        title: "Password Reset",
-        description: `Password reset instructions would be sent to: ${email}`,
+        title: "Password Reset Cancelled",
+        description: "Password reset request was cancelled.",
       });
-    } else if (email !== null) { // User clicked OK but left it empty
+    } else if (email.trim() === "") { // User clicked OK but left it empty
        toast({
         title: "Password Reset",
         description: "Email address cannot be empty for password reset.",
         variant: "destructive",
       });
-    } else { // User clicked Cancel
+    } else { // User entered an email and clicked OK
       toast({
-        title: "Password Reset Cancelled",
-        description: "Password reset request was cancelled.",
+        title: "Password Reset",
+        description: `Password reset instructions would be sent to: ${email}`,
       });
     }
   };
