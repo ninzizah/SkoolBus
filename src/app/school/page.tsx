@@ -7,9 +7,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { School as SchoolIcon, Users, PlusCircle, Edit3, Trash2 } from 'lucide-react';
-import type { Child, School } from '@/types'; 
+import type { Child, School } from '@/types';
 import { useToast } from "@/hooks/use-toast";
 
+// This mock data represents all children in the system.
 const allMockChildren: Child[] = [
   { id: 'c1', name: 'Leo Wonderland', age: 7, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: '2nd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=LW', assignedRouteId: undefined, assignedRouteName: undefined },
   { id: 'c2', name: 'Mia Wonderland', age: 5, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: 'Kindergarten', photoDataUrl: undefined, assignedRouteId: 'route1', assignedRouteName: 'Morning Star Route' },
@@ -18,6 +19,8 @@ const allMockChildren: Child[] = [
   { id: 'c5', name: 'Max Wonderland', age: 6, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p4', parentName: 'Diana Prince', classGrade: '1st Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=MW', assignedRouteId: 'route1', assignedRouteName: 'Morning Star Route' },
 ];
 
+// For this page, we assume a specific school is being viewed.
+// In a real app, this would likely come from a route parameter or user context.
 const currentSchool: Pick<School, 'id' | 'name'> = {
   id: 'sch1',
   name: 'Wonderland Elementary',
@@ -28,9 +31,10 @@ export default function SchoolPortalPage() {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Filter children who belong to the currentSchool
     const schoolStudents = allMockChildren.filter(child => child.schoolId === currentSchool.id);
     setStudents(schoolStudents);
-  }, []);
+  }, []); // Empty dependency array: runs once on mount
 
   const handleAddStudent = () => {
     const newStudentId = `new-c-${Math.random().toString(36).substring(2, 9)}`;
@@ -48,9 +52,9 @@ export default function SchoolPortalPage() {
       assignedRouteName: undefined,
     };
     setStudents(prevStudents => [...prevStudents, newStudent]);
-    toast({ 
-      title: "Mock Student Added", 
-      description: `A new student profile for ${newStudent.name} has been added. Please use 'Edit' to update details.` 
+    toast({
+      title: "Mock Student Added",
+      description: `A new student profile for ${newStudent.name} has been added. Please use 'Edit' to update details.`
     });
   };
 
