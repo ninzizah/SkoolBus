@@ -65,7 +65,7 @@ export default function SignupPage() {
           description: result.message,
         });
         // In a real app, you'd likely set some auth state here (e.g., token, user session)
-        router.push('/dashboard'); 
+        router.push('/dashboard');
       } else {
         toast({
           title: "Sign Up Failed",
@@ -92,17 +92,30 @@ export default function SignupPage() {
   };
 
   const handleForgotPasswordClick = () => {
-    // This can remain, but its primary utility is on the login page
-    toast({
-      title: "Coming Soon!",
-      description: "Forgot password functionality will be available soon.",
-    });
+    const email = window.prompt("Please enter your email address to reset your password:");
+    if (email && email.trim() !== "") {
+      toast({
+        title: "Password Reset",
+        description: `Password reset instructions would be sent to: ${email}`,
+      });
+    } else if (email !== null) { // User clicked OK but left it empty
+       toast({
+        title: "Password Reset",
+        description: "Email address cannot be empty for password reset.",
+        variant: "destructive",
+      });
+    } else { // User clicked Cancel
+      toast({
+        title: "Password Reset Cancelled",
+        description: "Password reset request was cancelled.",
+      });
+    }
   };
 
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-background p-6">
       <div /> {/* Spacer to push content down from the top with justify-between */}
-      
+
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <BusFront className="mx-auto h-16 w-16 text-primary mb-4" />
@@ -123,12 +136,12 @@ export default function SignupPage() {
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
-                    <Input 
-                      type="text" 
-                      placeholder="e.g., Shema Honore" 
-                      {...field} 
-                      autoComplete="name" 
-                      suppressHydrationWarning={true} 
+                    <Input
+                      type="text"
+                      placeholder="e.g., Shema Honore"
+                      {...field}
+                      autoComplete="name"
+                      suppressHydrationWarning={true}
                     />
                   </FormControl>
                   <FormMessage />
@@ -142,12 +155,12 @@ export default function SignupPage() {
                 <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <Input 
-                      type="email" 
-                      placeholder="e.g., you@example.com" 
-                      {...field} 
-                      autoComplete="email" 
-                      suppressHydrationWarning={true} 
+                    <Input
+                      type="email"
+                      placeholder="e.g., you@example.com"
+                      {...field}
+                      autoComplete="email"
+                      suppressHydrationWarning={true}
                     />
                   </FormControl>
                   <FormMessage />
@@ -161,12 +174,12 @@ export default function SignupPage() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input 
-                      type="password" 
-                      placeholder="••••••••" 
-                      {...field} 
-                      autoComplete="new-password" 
-                      suppressHydrationWarning={true} 
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                      autoComplete="new-password"
+                      suppressHydrationWarning={true}
                     />
                   </FormControl>
                   <FormMessage />
@@ -214,7 +227,7 @@ export default function SignupPage() {
                 Account &amp; Settings
             </Button>
         </div>
-        
+
         <div className="text-center text-sm text-muted-foreground space-y-1">
             <p>
             Already have an account?{' '}

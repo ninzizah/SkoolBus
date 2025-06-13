@@ -56,7 +56,7 @@ export default function LoginPage() {
           description: result.message,
         });
         // In a real app, you'd likely set some auth state here
-        router.push('/dashboard'); 
+        router.push('/dashboard');
       } else {
         toast({
           title: "Login Failed",
@@ -76,16 +76,30 @@ export default function LoginPage() {
   }
 
   const handleForgotPasswordClick = () => {
-    toast({
-      title: "Coming Soon!",
-      description: "Forgot password functionality will be available soon.",
-    });
+    const email = window.prompt("Please enter your email address to reset your password:");
+    if (email && email.trim() !== "") {
+      toast({
+        title: "Password Reset",
+        description: `Password reset instructions would be sent to: ${email}`,
+      });
+    } else if (email !== null) { // User clicked OK but left it empty
+       toast({
+        title: "Password Reset",
+        description: "Email address cannot be empty for password reset.",
+        variant: "destructive",
+      });
+    } else { // User clicked Cancel
+      toast({
+        title: "Password Reset Cancelled",
+        description: "Password reset request was cancelled.",
+      });
+    }
   };
 
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-background p-6">
       <div /> {/* Spacer */}
-      
+
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <BusFront className="mx-auto h-16 w-16 text-primary mb-4" />
@@ -106,10 +120,10 @@ export default function LoginPage() {
                 <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <Input 
-                      type="email" 
-                      placeholder="e.g., you@example.com" 
-                      {...field} 
+                    <Input
+                      type="email"
+                      placeholder="e.g., you@example.com"
+                      {...field}
                       autoComplete="email"
                       suppressHydrationWarning={true}
                     />
@@ -125,10 +139,10 @@ export default function LoginPage() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input 
-                      type="password" 
-                      placeholder="••••••••" 
-                      {...field} 
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
                       autoComplete="current-password"
                       suppressHydrationWarning={true}
                     />
@@ -151,7 +165,7 @@ export default function LoginPage() {
             </Button>
           </form>
         </Form>
-        
+
         <div className="text-center text-sm text-muted-foreground space-y-1">
             <p>
             <Button variant="link" onClick={handleForgotPasswordClick} className="p-0 h-auto font-medium text-primary hover:underline">
