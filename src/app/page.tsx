@@ -24,7 +24,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import type { SignupFormData } from '@/types';
 import { signupFormSchema } from '@/types';
-import { Loader2, BusFront } from "lucide-react";
+import { Loader2, BusFront, Settings } from "lucide-react";
 import { useRouter } from 'next/navigation';
 
 // Mock server action for signing up a user
@@ -83,6 +83,20 @@ export default function SignupPage() {
     }
   }
 
+  const handleAccountSettingsClick = () => {
+    toast({
+      title: "Coming Soon!",
+      description: "Account and Settings feature will be available soon.",
+    });
+  };
+
+  const handleForgotPasswordClick = () => {
+    toast({
+      title: "Coming Soon!",
+      description: "Forgot password functionality will be available soon.",
+    });
+  };
+
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-background p-6">
       <div /> {/* Spacer to push content down from the top with justify-between */}
@@ -109,10 +123,10 @@ export default function SignupPage() {
                   <FormControl>
                     <Input 
                       type="text" 
-                      placeholder="e.g., Jane Doe" 
+                      placeholder="e.g., Shema Honore" 
                       {...field} 
                       autoComplete="name" 
-                      suppressHydrationWarning 
+                      suppressHydrationWarning={true} 
                     />
                   </FormControl>
                   <FormMessage />
@@ -131,7 +145,7 @@ export default function SignupPage() {
                       placeholder="e.g., you@example.com" 
                       {...field} 
                       autoComplete="email" 
-                      suppressHydrationWarning 
+                      suppressHydrationWarning={true} 
                     />
                   </FormControl>
                   <FormMessage />
@@ -150,7 +164,7 @@ export default function SignupPage() {
                       placeholder="••••••••" 
                       {...field} 
                       autoComplete="new-password" 
-                      suppressHydrationWarning 
+                      suppressHydrationWarning={true} 
                     />
                   </FormControl>
                   <FormMessage />
@@ -191,9 +205,30 @@ export default function SignupPage() {
             </Button>
           </form>
         </Form>
-        <p className="text-center text-sm text-muted-foreground">
-          Already have an account? <a href="#" className="font-medium text-primary hover:underline">Log In</a> (Log in not implemented)
-        </p>
+
+        <div className="mt-6 text-center">
+            <Button variant="outline" onClick={handleAccountSettingsClick} className="w-full md:w-auto">
+                <Settings className="mr-2 h-4 w-4" />
+                Account &amp; Settings
+            </Button>
+        </div>
+        
+        <div className="text-center text-sm text-muted-foreground space-y-1">
+            <p>
+            Already have an account?{' '}
+            <Button variant="link" asChild className="p-0 h-auto font-medium text-primary hover:underline">
+                <a href="#">Log In</a>
+            </Button>
+            {' '}(Log in not implemented)
+            </p>
+            <p>
+            <Button variant="link" onClick={handleForgotPasswordClick} className="p-0 h-auto font-medium text-primary hover:underline">
+                Forgot Password?
+            </Button>
+            {' '}(Not implemented)
+            </p>
+        </div>
+
       </div>
        <footer className="w-full text-center py-4 text-muted-foreground text-sm">
          © {new Date().getFullYear()} SkoolBus. All rights reserved.
