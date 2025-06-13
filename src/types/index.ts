@@ -24,7 +24,7 @@ export const childFormSchema = z.object({
   age: z.coerce.number().int().positive("Age must be a positive number.").min(1, "Age must be at least 1."),
   classGrade: z.string().min(1, "Class/Grade is required."),
   photoDataUrl: z.string().optional().describe("A data URI of the child's photo. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
-  parentId: z.string().uuid("Valid parent ID is required."),
+  parentId: z.string().min(1, "Parent selection is required."), // Changed from .uuid()
   schoolId: z.string().min(1, "School selection is required."),
   assignedRouteId: z.string().optional(),
 });
@@ -104,3 +104,4 @@ export const loginFormSchema = z.object({
   password: z.string().min(1, "Password is required."), // Min 1, actual length check is done by server
 });
 export type LoginFormData = z.infer<typeof loginFormSchema>;
+
