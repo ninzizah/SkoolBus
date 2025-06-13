@@ -33,9 +33,25 @@ export default function SchoolPortalPage() {
   }, []);
 
   const handleAddStudent = () => {
-    // This would ideally open a form or dialog to add a new student specific to this school.
-    // For now, it's a placeholder.
-    toast({ title: "Action Placeholder", description: `Add student functionality for ${currentSchool.name} is not yet implemented.` });
+    const newStudentId = `new-c-${Math.random().toString(36).substring(2, 9)}`;
+    const newStudent: Child = {
+      id: newStudentId,
+      name: `New Student ${newStudentId.substring(0,4)}`,
+      age: 0, // Placeholder age
+      schoolId: currentSchool.id,
+      schoolName: currentSchool.name,
+      parentId: 'new-p-placeholder', // Placeholder parentId
+      parentName: 'To be assigned',
+      classGrade: 'To be assigned',
+      photoDataUrl: `https://placehold.co/50x50.png?text=N`,
+      assignedRouteId: undefined,
+      assignedRouteName: undefined,
+    };
+    setStudents(prevStudents => [...prevStudents, newStudent]);
+    toast({ 
+      title: "Mock Student Added", 
+      description: `A new student profile for ${newStudent.name} has been added. Please use 'Edit' to update details.` 
+    });
   };
 
   const handleEditStudent = (studentId: string) => {
@@ -49,8 +65,6 @@ export default function SchoolPortalPage() {
           student.id === studentId ? { ...student, name: newName.trim() } : student
         )
       );
-      // Note: This only updates the local 'students' state for this page.
-      // To update 'allMockChildren' or a central store would require more complex state management.
       toast({ title: "Student Updated", description: `Student's name changed to ${newName.trim()}.` });
     } else if (newName === "") {
       toast({ title: "Update Cancelled", description: "Student name cannot be empty.", variant: "destructive" });
@@ -63,7 +77,6 @@ export default function SchoolPortalPage() {
 
     if (window.confirm(`Are you sure you want to remove ${studentToDelete.name} from ${currentSchool.name}?`)) {
       setStudents(prevStudents => prevStudents.filter(s => s.id !== studentId));
-      // Note: This only updates the local 'students' state.
       toast({ title: "Student Removed", description: `${studentToDelete.name} has been removed from this list.` });
     }
   };
