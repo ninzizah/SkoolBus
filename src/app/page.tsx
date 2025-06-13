@@ -26,6 +26,7 @@ import type { SignupFormData } from '@/types';
 import { signupFormSchema } from '@/types';
 import { Loader2, BusFront, Settings } from "lucide-react";
 import { useRouter } from 'next/navigation';
+import Link from "next/link";
 
 // Mock server action for signing up a user
 async function signupUserAction(data: SignupFormData): Promise<{ success: boolean; message: string }> {
@@ -91,6 +92,7 @@ export default function SignupPage() {
   };
 
   const handleForgotPasswordClick = () => {
+    // This can remain, but its primary utility is on the login page
     toast({
       title: "Coming Soon!",
       description: "Forgot password functionality will be available soon.",
@@ -217,15 +219,13 @@ export default function SignupPage() {
             <p>
             Already have an account?{' '}
             <Button variant="link" asChild className="p-0 h-auto font-medium text-primary hover:underline">
-                <a href="#">Log In</a>
+                <Link href="/login">Log In</Link>
             </Button>
-            {' '}(Log in not implemented)
             </p>
             <p>
             <Button variant="link" onClick={handleForgotPasswordClick} className="p-0 h-auto font-medium text-primary hover:underline">
                 Forgot Password?
             </Button>
-            {' '}(Not implemented)
             </p>
         </div>
 

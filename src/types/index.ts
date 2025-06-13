@@ -98,3 +98,9 @@ export const signupFormSchema = z.object({
 });
 export type SignupFormData = z.infer<typeof signupFormSchema>;
 
+// Login Schemas and Types
+export const loginFormSchema = z.object({
+  email: z.string().email("Invalid email address."),
+  password: z.string().min(1, "Password is required."), // Min 1, actual length check is done by server
+});
+export type LoginFormData = z.infer<typeof loginFormSchema>;
