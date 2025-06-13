@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -10,9 +11,9 @@ import Image from 'next/image';
 
 // Mock data for parents
 const mockParents: Parent[] = [
-  { id: '1', name: 'Alice Wonderland', email: 'alice@example.com', childrenCount: 2 },
-  { id: '2', name: 'Bob The Builder', email: 'bob@example.com', childrenCount: 1 },
-  { id: '3', name: 'Charlie Brown', email: 'charlie@example.com', childrenCount: 3 },
+  { id: '1', name: 'Alice Wonderland', email: 'alice@example.com', phoneNumber: '555-0101', address: '123 Rabbit Hole Ln, Wonderland', childrenCount: 2 },
+  { id: '2', name: 'Bob The Builder', email: 'bob@example.com', phoneNumber: '555-0102', address: '456 Fixit Ave, Tooltown', childrenCount: 1 },
+  { id: '3', name: 'Charlie Brown', email: 'charlie@example.com', phoneNumber: '555-0103', address: '789 Kite St, Toonville', childrenCount: 3 },
 ];
 
 export default function ParentsPage() {
@@ -27,12 +28,10 @@ export default function ParentsPage() {
           <h1 className="text-3xl font-bold font-headline text-primary">Parent Accounts</h1>
           <p className="text-muted-foreground">Manage parent profiles and their associated children.</p>
         </div>
-        {/* Button to open AddParentForm, typically in a Dialog */}
-        {/* <Button><PlusCircle className="mr-2 h-4 w-4" /> Add Parent</Button> */}
       </div>
 
-      <div className="flex flex-col gap-8"> {/* Changed from grid to flex-col */}
-        <div> {/* Parent List Section */}
+      <div className="flex flex-col gap-8">
+        <div>
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline">Parent List</CardTitle>
@@ -44,6 +43,8 @@ export default function ParentsPage() {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead>Phone Number</TableHead>
+                    <TableHead>Address</TableHead>
                     <TableHead className="text-center">Children</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -53,6 +54,8 @@ export default function ParentsPage() {
                     <TableRow key={parent.id}>
                       <TableCell className="font-medium">{parent.name}</TableCell>
                       <TableCell>{parent.email}</TableCell>
+                      <TableCell>{parent.phoneNumber || 'N/A'}</TableCell>
+                      <TableCell>{parent.address || 'N/A'}</TableCell>
                       <TableCell className="text-center">{parent.childrenCount}</TableCell>
                       <TableCell className="text-right space-x-2">
                         <Button variant="outline" size="icon" onClick={() => handleEditParent(parent.id)} aria-label="Edit parent">
@@ -70,7 +73,7 @@ export default function ParentsPage() {
           </Card>
         </div>
 
-        <div> {/* Add New Parent and Image Section */}
+        <div>
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline flex items-center">

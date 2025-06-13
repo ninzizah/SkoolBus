@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import type { ParentFormData } from '@/types';
 import { parentFormSchema } from '@/types';
@@ -40,6 +42,8 @@ export default function AddParentForm() {
     defaultValues: {
       name: "",
       email: "",
+      phoneNumber: "",
+      address: "",
     },
   });
 
@@ -100,20 +104,32 @@ export default function AddParentForm() {
             </FormItem>
           )}
         />
-        {/* Password field can be added if needed for actual registration
         <FormField
           control={form.control}
-          name="password"
+          name="phoneNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Phone Number (Optional)</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="••••••••" {...field} />
+                <Input type="tel" placeholder="e.g., (555) 123-4567" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
-        /> */}
+        />
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Address (Optional)</FormLabel>
+              <FormControl>
+                <Textarea placeholder="e.g., 123 Main St, Anytown, USA" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isSubmitting}>
           {isSubmitting ? (
             <>
@@ -128,3 +144,4 @@ export default function AddParentForm() {
     </Form>
   );
 }
+

@@ -5,6 +5,11 @@ import { z } from 'zod';
 export const parentFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Invalid email address."),
+  phoneNumber: z.string()
+    .min(10, "Phone number must be at least 10 digits.")
+    .regex(/^\+?[0-9\s-()xX.]*$/, "Invalid phone number format. Allows digits, spaces, hyphens, parentheses, dots, and 'x' for extensions.")
+    .optional(),
+  address: z.string().min(5, "Address must be at least 5 characters.").optional(),
 });
 export type ParentFormData = z.infer<typeof parentFormSchema>;
 
@@ -20,7 +25,7 @@ export const childFormSchema = z.object({
   classGrade: z.string().min(1, "Class/Grade is required."),
   photoDataUrl: z.string().optional().describe("A data URI of the child's photo. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
   parentId: z.string().uuid("Valid parent ID is required."),
-  schoolId: z.string().min(1, "School selection is required."), 
+  schoolId: z.string().min(1, "School selection is required."),
   assignedRouteId: z.string().optional(),
 });
 export type ChildFormData = z.infer<typeof childFormSchema>;
@@ -30,8 +35,8 @@ export interface Child extends Omit<ChildFormData, 'photoDataUrl' | 'assignedRou
   parentId: string;
   parentName?: string;
   photoDataUrl?: string;
-  schoolId: string; 
-  schoolName?: string; 
+  schoolId: string;
+  schoolName?: string;
   assignedRouteId?: string;
   assignedRouteName?: string;
 }
@@ -92,3 +97,4 @@ export const signupFormSchema = z.object({
   }),
 });
 export type SignupFormData = z.infer<typeof signupFormSchema>;
+
