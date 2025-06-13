@@ -3,8 +3,8 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, suppressHydrationWarning, ...props }, ref) => {
+const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+  ({ className, type, suppressHydrationWarning, value, ...props }, ref) => { // Destructured 'value'
     return (
       <input
         type={type}
@@ -13,6 +13,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
           className
         )}
         ref={ref}
+        value={value ?? ""} // Ensure value is always a string (or number converted to string)
         suppressHydrationWarning={suppressHydrationWarning}
         {...props}
       />
