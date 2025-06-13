@@ -84,7 +84,9 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
+    <div className="flex flex-col items-center justify-between min-h-screen bg-background p-6">
+      <div /> {/* Spacer to push content down from the top with justify-between */}
+      
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <BusFront className="mx-auto h-16 w-16 text-primary mb-4" />
@@ -175,7 +177,7 @@ export default function SignupPage() {
           Already have an account? <a href="#" className="font-medium text-primary hover:underline">Log In</a> (Log in not implemented)
         </p>
       </div>
-       <footer className="absolute bottom-0 py-4 text-muted-foreground text-sm">
+       <footer className="w-full text-center py-4 text-muted-foreground text-sm">
          © {new Date().getFullYear()} SkoolBus. All rights reserved.
       </footer>
     </div>
