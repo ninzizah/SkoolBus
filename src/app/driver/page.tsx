@@ -9,6 +9,7 @@ import { MapPin, Users, CheckCircle, XCircle, AlertTriangle, Clock, ListChecks, 
 import type { AssignedRoute, ChildAttendance, RouteStop } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
+import { useToast } from '@/hooks/use-toast';
 
 // Mock data for driver's assigned route
 const initialMockRoute: AssignedRoute = {
@@ -75,6 +76,7 @@ const SteeringWheelIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export default function DriverDashboardPage() {
   const [assignedRoute, setAssignedRoute] = useState<AssignedRoute>(initialMockRoute);
+  const { toast } = useToast();
 
   const updateChildStatus = (stopId: string, childId: string, status: ChildAttendance['status']) => {
     setAssignedRoute(prevRoute => ({
@@ -99,6 +101,22 @@ export default function DriverDashboardPage() {
     stop.children.length === 0 || stop.children.every(child => child.status === 'Picked Up' || child.status === 'Dropped Off')
   );
 
+  const handleViewFullSchedule = () => {
+    toast({ title: "Feature Not Implemented", description: "Viewing the full schedule is coming soon!" });
+  };
+
+  const handleReportIssue = () => {
+    toast({ title: "Feature Not Implemented", description: "The issue reporting system is coming soon!" });
+  };
+
+  const handleViewRouteHistory = () => {
+    toast({ title: "Feature Not Implemented", description: "Viewing route history is coming soon!" });
+  };
+
+  const handleContactDispatch = () => {
+    toast({ title: "Feature Not Implemented", description: "Contacting dispatch is coming soon!" });
+  };
+
 
   return (
     <div className="container mx-auto p-4 md:p-8">
@@ -112,10 +130,18 @@ export default function DriverDashboardPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col sm:flex-row justify-between items-center gap-4">
-           <Button variant="secondary" className="bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground">
+           <Button 
+             variant="secondary" 
+             className="bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground"
+             onClick={handleViewFullSchedule}
+           >
             <Clock className="mr-2 h-4 w-4" /> View Full Schedule
           </Button>
-          <Button variant="destructive" className="bg-red-500 hover:bg-red-600 text-white">
+          <Button 
+            variant="destructive" 
+            className="bg-red-500 hover:bg-red-600 text-white"
+            onClick={handleReportIssue}
+          >
             <AlertTriangle className="mr-2 h-4 w-4" /> Report Issue
           </Button>
         </CardContent>
@@ -235,9 +261,8 @@ export default function DriverDashboardPage() {
               <CardTitle className="font-headline">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button className="w-full" variant="outline">Share Live Location</Button>
-              <Button className="w-full" variant="outline">View Route History</Button>
-              <Button className="w-full" variant="outline">Contact Dispatch</Button>
+              <Button className="w-full" variant="outline" onClick={handleViewRouteHistory}>View Route History</Button>
+              <Button className="w-full" variant="outline" onClick={handleContactDispatch}>Contact Dispatch</Button>
             </CardContent>
           </Card>
         </div>
@@ -245,3 +270,5 @@ export default function DriverDashboardPage() {
     </div>
   );
 }
+
+    
