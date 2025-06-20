@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { School as SchoolIcon, Users, PlusCircle, Edit3, Trash2, Route as RouteIcon, UserCheck } from 'lucide-react';
+import { School as SchoolIcon, Users, PlusCircle, Edit3, Trash2, Route as RouteIcon, UserCheck, BookOpenCheck } from 'lucide-react';
 import type { Child, School, BusRoute } from '@/types';
 import EditStudentForm from '@/components/children/edit-student-form';
 import type { EditStudentFormData } from '@/components/children/edit-student-form';
@@ -178,6 +178,13 @@ export default function SchoolPortalPage() {
     });
   };
 
+  const handleViewAttendance = () => {
+    toast({
+      title: "Attendance Records",
+      description: "This feature is under development. This section will display student attendance logs in the future."
+    });
+  };
+
 
   return (
     <div className="container mx-auto p-4 md:p-8">
@@ -299,11 +306,15 @@ export default function SchoolPortalPage() {
          </Card>
          <Card className="shadow-md">
             <CardHeader>
-                <CardTitle className="font-headline text-lg">Attendance Records</CardTitle>
+                <CardTitle className="font-headline text-lg flex items-center">
+                    <BookOpenCheck className="mr-2 h-5 w-5 text-primary" /> Attendance Records
+                </CardTitle>
                 <CardDescription>View student attendance logs.</CardDescription>
             </CardHeader>
             <CardContent>
-                <Button variant="outline" disabled>View Attendance (Coming Soon)</Button>
+                <Button variant="outline" onClick={handleViewAttendance}>
+                  View Attendance
+                </Button>
             </CardContent>
          </Card>
       </div>
