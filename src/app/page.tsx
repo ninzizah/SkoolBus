@@ -106,10 +106,8 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between min-h-screen bg-background p-6">
-      <div /> 
-
-      <div className="w-full max-w-md space-y-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-6">
+      <div className="w-full max-w-md space-y-8 py-12">
         <div className="text-center">
           <BusFront className="mx-auto h-16 w-16 text-primary mb-4" />
           <h1 className="text-3xl font-bold font-headline text-primary">
@@ -227,11 +225,7 @@ export default function SignupPage() {
             </Button>
             </p>
         </div>
-
       </div>
-       <footer className="w-full text-center py-4 text-muted-foreground text-sm">
-         © {new Date().getFullYear()} SkoolBus. Uburenganzira bwose burubahirizwa.
-      </footer>
     </div>
   );
 }
