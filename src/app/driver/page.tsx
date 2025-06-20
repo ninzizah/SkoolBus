@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MapPin, Users, CheckCircle, XCircle, AlertTriangle, Clock, ListChecks, Bus as BusIcon, CalendarDays } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { MapPin, Users, CheckCircle, XCircle, AlertTriangle, Clock, ListChecks, Bus as BusIcon, CalendarDays, MessageSquareWarning, Send } from 'lucide-react';
 import type { AssignedRoute, ChildAttendance, RouteStop } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -79,6 +80,8 @@ const SteeringWheelIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export default function DriverDashboardPage() {
   const [assignedRoute, setAssignedRoute] = useState<AssignedRoute>(initialMockRoute);
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+  const [isReportIssueDialogOpen, setIsReportIssueDialogOpen] = useState(false);
+  const [issueDescription, setIssueDescription] = useState('');
   const { toast } = useToast();
 
   const updateChildStatus = (stopId: string, childId: string, status: ChildAttendance['status']) => {
@@ -108,9 +111,28 @@ export default function DriverDashboardPage() {
     setIsScheduleDialogOpen(true);
   };
 
-  const handleReportIssue = () => {
-    toast({ title: "Feature Not Implemented", description: "The issue reporting system is coming soon!" });
+  const handleOpenReportIssueDialog = () => {
+    setIsReportIssueDialogOpen(true);
   };
+
+  const handleSendIssueReport = () => {
+    if (!issueDescription.trim()) {
+      toast({
+        title: "Cannot Send Empty Report",
+        description: "Please describe the issue before sending.",
+        variant: "destructive",
+      });
+      return;
+    }
+    // Simulate sending the report
+    toast({
+      title: "Issue Reported",
+      description: `Details: "${issueDescription}". Dispatch has been notified.`,
+    });
+    setIssueDescription('');
+    setIsReportIssueDialogOpen(false);
+  };
+
 
   const handleViewRouteHistory = () => {
     toast({ title: "Feature Not Implemented", description: "Viewing route history is coming soon!" });
@@ -143,7 +165,7 @@ export default function DriverDashboardPage() {
           <Button 
             variant="destructive" 
             className="bg-red-500 hover:bg-red-600 text-white"
-            onClick={handleReportIssue}
+            onClick={handleOpenReportIssueDialog}
           >
             <AlertTriangle className="mr-2 h-4 w-4" /> Report Issue
           </Button>
@@ -328,6 +350,38 @@ export default function DriverDashboardPage() {
           </ScrollArea>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsScheduleDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Report Issue Dialog */}
+      <Dialog open={isReportIssueDialogOpen} onOpenChange={setIsReportIssueDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-headline flex items-center">
+              <MessageSquareWarning className="mr-2 h-6 w-6 text-destructive" /> Report an Issue
+            </DialogTitle>
+            <DialogDescription>
+              Describe the issue you are encountering (e.g., unexpected delay, bus malfunction, passenger concern).
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <Textarea
+              placeholder="Please provide a detailed description of the issue..."
+              value={issueDescription}
+              onChange={(e) => setIssueDescription(e.target.value)}
+              className="min-h-[120px]"
+            />
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => {setIsReportIssueDialogOpen(false); setIssueDescription('');}}>Cancel</Button>
+            <Button 
+              onClick={handleSendIssueReport} 
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+              disabled={!issueDescription.trim()}
+            >
+              <Send className="mr-2 h-4 w-4" /> Send Report
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
