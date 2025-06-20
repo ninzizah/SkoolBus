@@ -20,7 +20,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
 const navItems = [
-  { href: '/parents', label: 'Ababyeyi', icon: Users },
+  { href: '/parents', label: 'Parents', icon: Users }, // Changed 'Ababyeyi' to 'Parents'
   { href: '/children', label: 'Abana', icon: Smile },
   { href: '/tracking', label: 'Gukurikirana', icon: MapPin },
   { href: '/driver', label: 'Umushoferi', icon: Gauge },
@@ -36,7 +36,7 @@ interface MockNotification {
   read: boolean;
   icon?: React.ElementType;
   type?: 'info' | 'warning' | 'success' | 'route' | 'system';
-  href?: string; // <-- New field for navigation
+  href?: string;
 }
 
 const initialMockNotifications: MockNotification[] = [
@@ -107,7 +107,7 @@ export function Header() {
     if (notification.href) {
       router.push(notification.href);
     }
-    setIsNotificationsDialogOpen(false); // Close dialog after click/navigation
+    setIsNotificationsDialogOpen(false); 
   };
 
   const handleMarkAllAsRead = () => {
@@ -118,6 +118,8 @@ export function Header() {
   const handleClearAllNotifications = () => {
     setNotifications([]);
     toast({ title: "Amenyesha Yasibwe", description: "Amenyesha yose yakuweho." });
+    // Optionally, close the dialog after clearing
+    // setIsNotificationsDialogOpen(false); 
   };
 
   const getNotificationIcon = (notification: MockNotification) => {
@@ -262,5 +264,3 @@ export function Header() {
     </>
   );
 }
-
-    
