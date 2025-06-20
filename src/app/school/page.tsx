@@ -113,18 +113,31 @@ export default function SchoolPortalPage() {
 
   const handleAddSchoolRoute = () => {
     const newRouteName = window.prompt("Shyiramo izina ry'urugendo rushya:", "Urugendo Rushya rw'Ishuri");
-    if (newRouteName && newRouteName.trim() !== "") {
-      const newRoute: BusRoute = {
-        id: `sch-route-${Math.random().toString(36).substring(2, 9)}`,
-        name: newRouteName.trim(),
-        pickupTime: "08:00 AM", 
-        driverName: "Ntawe", 
-      };
-      setSchoolRoutes(prev => [...prev, newRoute]);
-      toast({ title: "Urugendo Rwongewemo", description: `Urugendo "${newRoute.name}" rwongewemo.` });
-    } else if (newRouteName === "") {
+    if (!newRouteName || newRouteName.trim() === "") {
       toast({ title: "Kwonheraho Byahagaritswe", description: "Izina ry'urugendo ntirishobora kuba ubusa.", variant: "destructive" });
+      return;
     }
+
+    const newPickupTime = window.prompt("Shyiramo isaha yo gufata (urugero: 07:45 AM):", "08:00 AM");
+    if (newPickupTime === null) { // User cancelled
+        toast({ title: "Kwonheraho Byahagaritswe", description: "Ntabwo wongeyeho urugendo."});
+        return;
+    }
+
+    const newDriverName = window.prompt("Shyiramo izina ry'umushoferi:", "Ntawe");
+     if (newDriverName === null) { // User cancelled
+        toast({ title: "Kwonheraho Byahagaritswe", description: "Ntabwo wongeyeho urugendo."});
+        return;
+    }
+
+    const newRoute: BusRoute = {
+      id: `sch-route-${Math.random().toString(36).substring(2, 9)}`,
+      name: newRouteName.trim(),
+      pickupTime: newPickupTime.trim() || "08:00 AM", 
+      driverName: newDriverName.trim() || "Ntawe", 
+    };
+    setSchoolRoutes(prev => [...prev, newRoute]);
+    toast({ title: "Urugendo Rwongewemo", description: `Urugendo "${newRoute.name}" rwongewemo n'isaha yo gufata ${newRoute.pickupTime} n'umushoferi ${newRoute.driverName}.` });
   };
 
   const handleEditSchoolRoute = (routeId: string) => {
@@ -132,12 +145,34 @@ export default function SchoolPortalPage() {
     if (!routeToEdit) return;
 
     const newName = window.prompt("Shyiramo izina rishya ry'urugendo:", routeToEdit.name);
-    if (newName && newName.trim() !== "") {
-      setSchoolRoutes(prev => prev.map(r => r.id === routeId ? { ...r, name: newName.trim() } : r));
-      toast({ title: "Urugendo Rwahinduwe", description: `Izina ry'urugendo ryahinduwe "${newName.trim()}".` });
-    } else if (newName === "") {
-      toast({ title: "Guhindura Byahagaritswe", description: "Izina ry'urugendo ntirishobora kuba ubusa.", variant: "destructive" });
+    if (newName === null) { // User cancelled
+        toast({ title: "Guhindura Byahagaritswe", description: "Nta mpinduka zakozwe ku rugendo."});
+        return;
     }
+    if (newName.trim() === "") {
+      toast({ title: "Guhindura Byahagaritswe", description: "Izina ry'urugendo ntirishobora kuba ubusa.", variant: "destructive" });
+      return;
+    }
+    
+    const newTime = window.prompt("Shyiramo isaha nshya yo gufata:", routeToEdit.pickupTime);
+    if (newTime === null) {
+        toast({ title: "Guhindura Byahagaritswe", description: "Nta mpinduka zakozwe ku rugendo."});
+        return;
+    }
+
+    const newDriver = window.prompt("Shyiramo izina rishya ry'umushoferi:", routeToEdit.driverName);
+    if (newDriver === null) {
+        toast({ title: "Guhindura Byahagaritswe", description: "Nta mpinduka zakozwe ku rugendo."});
+        return;
+    }
+
+    setSchoolRoutes(prev => prev.map(r => r.id === routeId ? { 
+        ...r, 
+        name: newName.trim(),
+        pickupTime: newTime.trim() || r.pickupTime,
+        driverName: newDriver.trim() || r.driverName
+    } : r));
+    toast({ title: "Urugendo Rwahinduwe", description: `Urugendo "${newName.trim()}" rwavuguruwe.` });
   };
 
   const handleDeleteSchoolRoute = (routeId: string) => {
