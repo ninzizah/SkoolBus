@@ -76,6 +76,10 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
     }
   };
 
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   async function onSubmit(data: ChildFormData) {
     setIsSubmitting(true);
     try {
@@ -189,20 +193,30 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
               <FormLabel>Ifoto</FormLabel>
               <FormControl>
                 <div className="flex flex-col items-center space-y-2">
-                  {photoPreview ? (
-                    <img src={photoPreview} alt="Ifoto y'umwana" className="h-24 w-24 rounded-full object-cover border" data-ai-hint="umwana ifoto" />
-                  ) : (
-                    <div className="h-24 w-24 rounded-full bg-muted flex items-center justify-center border">
+                  <div 
+                    onClick={triggerFileInput} 
+                    className="cursor-pointer h-24 w-24 rounded-full bg-muted flex items-center justify-center border hover:bg-muted/80 transition-colors"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') triggerFileInput();}}
+                  >
+                    {photoPreview ? (
+                      <img src={photoPreview} alt="Ifoto y'umwana" className="h-full w-full rounded-full object-cover" data-ai-hint="umwana ifoto" />
+                    ) : (
                       <UploadCloud className="h-10 w-10 text-muted-foreground" />
-                    </div>
-                  )}
+                    )}
+                  </div>
                   <Input 
                     type="file" 
                     accept="image/*" 
                     onChange={handlePhotoChange} 
-                    className="text-sm"
+                    className="hidden" 
                     ref={fileInputRef}
+                    aria-hidden="true"
                   />
+                  <Button type="button" variant="link" onClick={triggerFileInput} className="text-sm p-0 h-auto">
+                    {photoPreview ? "Hindura ifoto" : "Hitamo ifoto"}
+                  </Button>
                 </div>
               </FormControl>
               <FormMessage />
