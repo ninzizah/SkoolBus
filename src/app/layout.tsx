@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { MainLayout } from '@/components/layout/main-layout';
@@ -6,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
   title: 'SkoolBus',
   description: 'Safe school transportation for children.',
+  icons: null, // This tells Next.js not to add a default favicon
 };
 
 export default function RootLayout({
