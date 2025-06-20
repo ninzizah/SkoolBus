@@ -30,13 +30,11 @@ import { useRouter } from 'next/navigation';
 import Link from "next/link";
 
 async function signupUserAction(data: SignupFormData): Promise<{ success: boolean; message: string }> {
-  console.log("Signing up user:", data);
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  if (data.email.toLowerCase().includes("error@example.com")) {
-    return { success: false, message: "Iyi email isanzwe ikoreshwa cyangwa ntiyemewe." };
-  }
+  console.log("[SignupPage] signupUserAction called (diagnostic mode - always success) with data:", data);
+  await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+  // Always return success for diagnostic purposes
   const roleKinyarwanda = data.role === "parent" ? "Umubyeyi" : data.role === "school_representative" ? "Uhagarariye Ishuri" : "Umushoferi";
-  return { success: true, message: `Konti ya ${data.fullName} yafunguwe neza nka ${roleKinyarwanda}!` };
+  return { success: true, message: `Diagnostic: Konti ya ${data.fullName} yafunguwe neza nka ${roleKinyarwanda}!` };
 }
 
 const MOCK_TOKEN = "TOKEN123";
@@ -71,18 +69,24 @@ export default function SignupPage() {
 
   async function onSignupSubmit(data: SignupFormData) {
     setIsSubmitting(true);
+    console.log('[SignupPage] onSignupSubmit started with data:', data);
     try {
       const result = await signupUserAction(data);
+      console.log('[SignupPage] signupUserAction result:', result);
       if (result.success) {
         toast({ title: "Kwiyandikisha Byagenze Neza", description: result.message });
+        console.log('[SignupPage] Navigating to /dashboard...');
         router.push('/dashboard');
+        console.log('[SignupPage] Navigation to /dashboard initiated.');
       } else {
         toast({ title: "Kwiyandikisha Byanze", description: result.message || "Habayeho ikibazo kitazwi.", variant: "destructive" });
       }
     } catch (error) {
+      console.error('[SignupPage] Error during signup submission:', error);
       toast({ title: "Ikibazo", description: "Habayeho ikibazo kitateganijwe. Nyamuneka gerageza futhi.", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
+      console.log('[SignupPage] onSignupSubmit finished.');
     }
   }
 
