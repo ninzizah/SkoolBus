@@ -7,7 +7,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { School as SchoolIcon, Users, PlusCircle, Edit3, Trash2, Route as RouteIcon } from 'lucide-react';
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { School as SchoolIcon, Users, PlusCircle, Edit3, Trash2, Route as RouteIcon, UserCheck } from 'lucide-react';
 import type { Child, School, BusRoute } from '@/types';
 import EditStudentForm from '@/components/children/edit-student-form';
 import type { EditStudentFormData } from '@/components/children/edit-student-form';
@@ -29,7 +31,15 @@ const currentSchool: Pick<School, 'id' | 'name'> = {
 const initialMockSchoolRoutes: BusRoute[] = [
   { id: 'sch1-route1', name: 'Wonderland Morning A', pickupTime: '07:30 AM', driverName: 'Mr. Sunny' },
   { id: 'sch1-route2', name: 'Wonderland Afternoon B', pickupTime: '03:45 PM', driverName: 'Ms. Luna' },
-  { id: 'sch1-route3', name: 'Wonderland Early Bird', pickupTime: '07:00 AM', driverName: 'Mr. Early' },
+  { id: 'sch1-route3', name: 'Wonderland Early Bird', pickupTime: '07:00 AM', driverName: 'To be assigned' },
+];
+
+const mockDrivers: { id: string; name: string }[] = [
+    { id: 'driver1', name: 'Mr. Sunny' },
+    { id: 'driver2', name: 'Ms. Luna' },
+    { id: 'driver3', name: 'Capt. Reliable' },
+    { id: 'driver4', name: 'Sgt. Speedy' },
+    { id: 'driver5', name: 'Dr. Navigator' },
 ];
 
 
@@ -38,6 +48,7 @@ export default function SchoolPortalPage() {
   const [schoolRoutes, setSchoolRoutes] = useState<BusRoute[]>(initialMockSchoolRoutes);
   const [isEditStudentDialogOpen, setIsEditStudentDialogOpen] = useState(false);
   const [isRouteManagementDialogOpen, setIsRouteManagementDialogOpen] = useState(false);
+  const [isAssignDriverDialogOpen, setIsAssignDriverDialogOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Child | null>(null);
   const { toast } = useToast();
 
@@ -103,8 +114,8 @@ export default function SchoolPortalPage() {
       const newRoute: BusRoute = {
         id: `sch-route-${Math.random().toString(36).substring(2, 9)}`,
         name: newRouteName.trim(),
-        pickupTime: "08:00 AM", // Default
-        driverName: "To be assigned", // Default
+        pickupTime: "08:00 AM", 
+        driverName: "To be assigned", 
       };
       setSchoolRoutes(prev => [...prev, newRoute]);
       toast({ title: "Route Added", description: `Route "${newRoute.name}" added.` });
@@ -132,12 +143,39 @@ export default function SchoolPortalPage() {
 
     if (window.confirm(`Are you sure you want to delete route "${routeToDelete.name}"?`)) {
       setSchoolRoutes(prev => prev.filter(r => r.id !== routeId));
-      // Also unassign this route from any students
       setStudents(prevStudents => prevStudents.map(s => 
         s.assignedRouteId === routeId ? { ...s, assignedRouteId: undefined, assignedRouteName: undefined } : s
       ));
       toast({ title: "Route Deleted", description: `Route "${routeToDelete.name}" deleted.` });
     }
+  };
+
+  // Driver Assignment Function
+  const handleAssignDriverToRoute = (routeId: string, newDriverName: string) => {
+    const targetRoute = schoolRoutes.find(r => r.id === routeId);
+    if (!targetRoute) return;
+
+    setSchoolRoutes(prevRoutes =>
+      prevRoutes.map(route =>
+        route.id === routeId ? { ...route, driverName: newDriverName } : route
+      )
+    );
+    // Update driver name in route management dialog if it's open
+    // This is implicitly handled by re-rendering with updated schoolRoutes state
+    
+    // Also update driver name in student roster if they are assigned to this route.
+    setStudents(prevStudents => 
+        prevStudents.map(s => 
+            s.assignedRouteId === routeId && targetRoute
+            ? { ...s, assignedRouteName: `${targetRoute.name}` } // Keep route name, driver is now part of route object
+            : s
+        )
+    );
+
+    toast({
+      title: "Driver Assigned",
+      description: `${newDriverName === "To be assigned" ? "Driver unassigned from" : newDriverName + " assigned to"} route "${targetRoute.name}".`,
+    });
   };
 
 
@@ -160,7 +198,7 @@ export default function SchoolPortalPage() {
           <CardTitle className="font-headline flex items-center">
             <Users className="mr-2 h-5 w-5 text-primary" /> Student Roster
           </CardTitle>
-          <CardDescription>View and manage students enrolled at {currentSchool.name}. Includes assigned bus routes.</CardDescription>
+          <CardDescription>View and manage students enrolled at {currentSchool.name}. Includes assigned bus routes and drivers.</CardDescription>
         </CardHeader>
         <CardContent>
           {students.length === 0 ? (
@@ -175,40 +213,44 @@ export default function SchoolPortalPage() {
                   <TableHead>Class/Grade</TableHead>
                   <TableHead>Parent Name</TableHead>
                   <TableHead>Assigned Route</TableHead>
+                  <TableHead>Route Driver</TableHead>
                   <TableHead className="text-right w-[150px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {students.map((student) => (
-                  <TableRow key={student.id}>
-                    <TableCell>
-                      <Avatar>
-                        <AvatarImage src={student.photoDataUrl} alt={student.name} data-ai-hint="child portrait" />
-                        <AvatarFallback>{student.name.substring(0, 1).toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                    </TableCell>
-                    <TableCell className="font-medium">{student.name}</TableCell>
-                    <TableCell className="text-center">{student.age}</TableCell>
-                    <TableCell>{student.classGrade}</TableCell>
-                    <TableCell>{student.parentName || 'N/A'}</TableCell>
-                    <TableCell>{student.assignedRouteName || <span className="text-muted-foreground italic">Not Assigned</span>}</TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button variant="outline" size="icon" onClick={() => openEditStudentDialog(student)} aria-label="Edit student">
-                        <Edit3 className="h-4 w-4" />
-                      </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDeleteStudent(student.id)} aria-label="Delete student">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {students.map((student) => {
+                  const route = schoolRoutes.find(r => r.id === student.assignedRouteId);
+                  return (
+                    <TableRow key={student.id}>
+                      <TableCell>
+                        <Avatar>
+                          <AvatarImage src={student.photoDataUrl} alt={student.name} data-ai-hint="child portrait" />
+                          <AvatarFallback>{student.name.substring(0, 1).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                      </TableCell>
+                      <TableCell className="font-medium">{student.name}</TableCell>
+                      <TableCell className="text-center">{student.age}</TableCell>
+                      <TableCell>{student.classGrade}</TableCell>
+                      <TableCell>{student.parentName || 'N/A'}</TableCell>
+                      <TableCell>{student.assignedRouteName || <span className="text-muted-foreground italic">Not Assigned</span>}</TableCell>
+                      <TableCell>{route?.driverName || <span className="text-muted-foreground italic">N/A</span>}</TableCell>
+                      <TableCell className="text-right space-x-2">
+                        <Button variant="outline" size="icon" onClick={() => openEditStudentDialog(student)} aria-label="Edit student">
+                          <Edit3 className="h-4 w-4" />
+                        </Button>
+                        <Button variant="destructive" size="icon" onClick={() => handleDeleteStudent(student.id)} aria-label="Delete student">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           )}
         </CardContent>
       </Card>
       
-      {/* Edit Student Dialog */}
       {editingStudent && (
         <Dialog open={isEditStudentDialogOpen} onOpenChange={setIsEditStudentDialogOpen}>
           <DialogContent className="sm:max-w-[480px]">
@@ -247,10 +289,12 @@ export default function SchoolPortalPage() {
          <Card className="shadow-md">
             <CardHeader>
                 <CardTitle className="font-headline text-lg">Driver Assignment</CardTitle>
-                <CardDescription>Assign drivers to school routes.</CardDescription>
+                <CardDescription>Assign available drivers to school bus routes.</CardDescription>
             </CardHeader>
             <CardContent>
-                <Button variant="outline" disabled>Assign Drivers (Coming Soon)</Button>
+                <Button variant="outline" onClick={() => setIsAssignDriverDialogOpen(true)}>
+                  <UserCheck className="mr-2 h-4 w-4" /> Assign Drivers
+                </Button>
             </CardContent>
          </Card>
          <Card className="shadow-md">
@@ -264,7 +308,6 @@ export default function SchoolPortalPage() {
          </Card>
       </div>
 
-      {/* Route Management Dialog */}
       <Dialog open={isRouteManagementDialogOpen} onOpenChange={setIsRouteManagementDialogOpen}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
@@ -272,47 +315,101 @@ export default function SchoolPortalPage() {
               <RouteIcon className="mr-2 h-5 w-5 text-primary"/> Route Management for {currentSchool.name}
             </DialogTitle>
             <DialogDescription>
-              View, add, edit, or delete bus routes for your school.
+              View, add, edit, or delete bus routes for your school. Drivers assigned here will reflect in the student roster.
             </DialogDescription>
           </DialogHeader>
-          <div className="py-4 space-y-4">
-            <Button onClick={handleAddSchoolRoute} className="bg-accent hover:bg-accent/90 text-accent-foreground">
-              <PlusCircle className="mr-2 h-4 w-4" /> Add New Route
-            </Button>
-            {schoolRoutes.length === 0 ? (
-              <p className="text-muted-foreground text-center py-4">No routes configured for {currentSchool.name} yet.</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Route Name</TableHead>
-                    <TableHead>Pickup Time</TableHead>
-                    <TableHead>Driver Name</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {schoolRoutes.map((route) => (
-                    <TableRow key={route.id}>
-                      <TableCell className="font-medium">{route.name}</TableCell>
-                      <TableCell>{route.pickupTime}</TableCell>
-                      <TableCell>{route.driverName}</TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button variant="outline" size="icon" onClick={() => handleEditSchoolRoute(route.id)} aria-label="Edit route">
-                          <Edit3 className="h-4 w-4" />
-                        </Button>
-                        <Button variant="destructive" size="icon" onClick={() => handleDeleteSchoolRoute(route.id)} aria-label="Delete route">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
+          <ScrollArea className="max-h-[60vh] p-1">
+            <div className="py-4 space-y-4">
+              <Button onClick={handleAddSchoolRoute} className="bg-accent hover:bg-accent/90 text-accent-foreground mb-4">
+                <PlusCircle className="mr-2 h-4 w-4" /> Add New Route
+              </Button>
+              {schoolRoutes.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">No routes configured for {currentSchool.name} yet.</p>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Route Name</TableHead>
+                      <TableHead>Pickup Time</TableHead>
+                      <TableHead>Driver Name</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </div>
+                  </TableHeader>
+                  <TableBody>
+                    {schoolRoutes.map((route) => (
+                      <TableRow key={route.id}>
+                        <TableCell className="font-medium">{route.name}</TableCell>
+                        <TableCell>{route.pickupTime}</TableCell>
+                        <TableCell>{route.driverName}</TableCell>
+                        <TableCell className="text-right space-x-2">
+                          <Button variant="outline" size="icon" onClick={() => handleEditSchoolRoute(route.id)} aria-label="Edit route name">
+                            <Edit3 className="h-4 w-4" />
+                          </Button>
+                          <Button variant="destructive" size="icon" onClick={() => handleDeleteSchoolRoute(route.id)} aria-label="Delete route">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </div>
+          </ScrollArea>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsRouteManagementDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isAssignDriverDialogOpen} onOpenChange={setIsAssignDriverDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="font-headline flex items-center">
+              <UserCheck className="mr-2 h-5 w-5 text-primary"/> Assign Drivers to Routes
+            </DialogTitle>
+            <DialogDescription>
+              Select a driver for each school route from the list of available drivers.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh] p-1 mt-4">
+            <div className="space-y-4">
+              {schoolRoutes.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">No routes available. Please add routes first.</p>
+              ) : (
+                schoolRoutes.map((route) => (
+                  <div key={route.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 border rounded-md hover:bg-muted/50 transition-colors">
+                    <div className="mb-2 sm:mb-0">
+                      <p className="font-medium text-foreground">{route.name}</p>
+                      <p className="text-xs text-muted-foreground">Pickup: {route.pickupTime}</p>
+                    </div>
+                    <Select
+                      value={route.driverName === "To be assigned" ? undefined : route.driverName}
+                      onValueChange={(newDriverName) => {
+                        handleAssignDriverToRoute(route.id, newDriverName || "To be assigned");
+                      }}
+                    >
+                      <SelectTrigger className="w-full sm:w-[200px]">
+                        <SelectValue placeholder="Select driver" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="To be assigned">
+                          <span className="italic text-muted-foreground">To be assigned</span>
+                        </SelectItem>
+                        {mockDrivers.map((driver) => (
+                          <SelectItem key={driver.id} value={driver.name}>
+                            {driver.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ))
+              )}
+            </div>
+          </ScrollArea>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setIsAssignDriverDialogOpen(false)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -320,5 +417,4 @@ export default function SchoolPortalPage() {
     </div>
   );
 }
-
     
