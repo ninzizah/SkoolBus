@@ -6,21 +6,22 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { School as SchoolIcon, Users, PlusCircle, Edit3, Trash2, Route as RouteIcon, UserCheck, BookOpenCheck } from 'lucide-react';
-import type { Child, School, BusRoute } from '@/types';
+import { School as SchoolIcon, Users, PlusCircle, Edit3, Trash2, Route as RouteIcon, UserCheck, BookOpenCheck, ClockIcon } from 'lucide-react';
+import type { Child, School, BusRoute, ChildAttendanceStatus } from '@/types';
 import EditStudentForm from '@/components/children/edit-student-form';
 import type { EditStudentFormData } from '@/components/children/edit-student-form';
 import { useToast } from "@/hooks/use-toast";
 
 const allMockChildren: Child[] = [
-  { id: 'c1', name: 'Leo Wonderland', age: 7, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: '2nd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=LW', assignedRouteId: 'sch1-route1', assignedRouteName: 'Wonderland Morning A' },
-  { id: 'c2', name: 'Mia Wonderland', age: 5, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: 'Kindergarten', photoDataUrl: undefined, assignedRouteId: 'sch1-route1', assignedRouteName: 'Wonderland Morning A' },
-  { id: 'c3', name: 'Sam Construction', age: 8, schoolId: 'sch2', schoolName: 'Construction Academy', parentId: 'p2', parentName: 'Bob The Builder', classGrade: '3rd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=SC', assignedRouteId: undefined, assignedRouteName: undefined },
-  { id: 'c4', name: 'Lily Oakwood', age: 9, schoolId: 'sch3', schoolName: 'Oakwood High', parentId: 'p3', parentName: 'Charlie Brown', classGrade: '4th Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=LO', assignedRouteId: 'route2', assignedRouteName: 'Afternoon Comet Line'},
-  { id: 'c5', name: 'Max Wonderland', age: 6, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p4', parentName: 'Diana Prince', classGrade: '1st Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=MW', assignedRouteId: 'sch1-route2', assignedRouteName: 'Wonderland Afternoon B' },
+  { id: 'c1', name: 'Leo Wonderland', age: 7, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: '2nd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=LW', assignedRouteId: 'sch1-route1', assignedRouteName: 'Wonderland Morning A', lastAttendanceStatus: 'Picked Up', lastAttendanceTimestamp: '2024-07-30 07:35 AM' },
+  { id: 'c2', name: 'Mia Wonderland', age: 5, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: 'Kindergarten', photoDataUrl: undefined, assignedRouteId: 'sch1-route1', assignedRouteName: 'Wonderland Morning A', lastAttendanceStatus: 'Dropped Off', lastAttendanceTimestamp: '2024-07-30 08:10 AM' },
+  { id: 'c3', name: 'Sam Construction', age: 8, schoolId: 'sch2', schoolName: 'Construction Academy', parentId: 'p2', parentName: 'Bob The Builder', classGrade: '3rd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=SC', assignedRouteId: undefined, assignedRouteName: undefined, lastAttendanceStatus: 'Pending', lastAttendanceTimestamp: 'N/A' },
+  { id: 'c4', name: 'Lily Oakwood', age: 9, schoolId: 'sch3', schoolName: 'Oakwood High', parentId: 'p3', parentName: 'Charlie Brown', classGrade: '4th Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=LO', assignedRouteId: 'route2', assignedRouteName: 'Afternoon Comet Line', lastAttendanceStatus: 'Picked Up', lastAttendanceTimestamp: '2024-07-29 03:50 PM'},
+  { id: 'c5', name: 'Max Wonderland', age: 6, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p4', parentName: 'Diana Prince', classGrade: '1st Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=MW', assignedRouteId: 'sch1-route2', assignedRouteName: 'Wonderland Afternoon B', lastAttendanceStatus: 'Absent', lastAttendanceTimestamp: '2024-07-30 07:00 AM' },
 ];
 
 const currentSchool: Pick<School, 'id' | 'name'> = {
@@ -49,6 +50,7 @@ export default function SchoolPortalPage() {
   const [isEditStudentDialogOpen, setIsEditStudentDialogOpen] = useState(false);
   const [isRouteManagementDialogOpen, setIsRouteManagementDialogOpen] = useState(false);
   const [isAssignDriverDialogOpen, setIsAssignDriverDialogOpen] = useState(false);
+  const [isAttendanceDialogOpen, setIsAttendanceDialogOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Child | null>(null);
   const { toast } = useToast();
 
@@ -71,6 +73,8 @@ export default function SchoolPortalPage() {
       photoDataUrl: `https://placehold.co/50x50.png?text=N`,
       assignedRouteId: undefined,
       assignedRouteName: undefined,
+      lastAttendanceStatus: 'Pending',
+      lastAttendanceTimestamp: new Date().toLocaleDateString(),
     };
     setStudents(prevStudents => [...prevStudents, newStudent]);
     toast({
@@ -160,14 +164,11 @@ export default function SchoolPortalPage() {
         route.id === routeId ? { ...route, driverName: newDriverName } : route
       )
     );
-    // Update driver name in route management dialog if it's open
-    // This is implicitly handled by re-rendering with updated schoolRoutes state
     
-    // Also update driver name in student roster if they are assigned to this route.
     setStudents(prevStudents => 
         prevStudents.map(s => 
             s.assignedRouteId === routeId && targetRoute
-            ? { ...s, assignedRouteName: `${targetRoute.name}` } // Keep route name, driver is now part of route object
+            ? { ...s, assignedRouteName: `${targetRoute.name}` } 
             : s
         )
     );
@@ -179,10 +180,7 @@ export default function SchoolPortalPage() {
   };
 
   const handleViewAttendance = () => {
-    toast({
-      title: "Attendance Records",
-      description: "This feature is under development. This section will display student attendance logs in the future."
-    });
+    setIsAttendanceDialogOpen(true);
   };
 
 
@@ -309,7 +307,7 @@ export default function SchoolPortalPage() {
                 <CardTitle className="font-headline text-lg flex items-center">
                     <BookOpenCheck className="mr-2 h-5 w-5 text-primary" /> Attendance Records
                 </CardTitle>
-                <CardDescription>View student attendance logs.</CardDescription>
+                <CardDescription>View student attendance logs for {currentSchool.name}.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Button variant="outline" onClick={handleViewAttendance}>
@@ -421,6 +419,66 @@ export default function SchoolPortalPage() {
           </ScrollArea>
           <DialogFooter className="mt-4">
             <Button variant="outline" onClick={() => setIsAssignDriverDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isAttendanceDialogOpen} onOpenChange={setIsAttendanceDialogOpen}>
+        <DialogContent className="sm:max-w-2xl md:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="font-headline flex items-center">
+              <BookOpenCheck className="mr-2 h-6 w-6 text-primary" /> Student Attendance Records for {currentSchool.name}
+            </DialogTitle>
+            <DialogDescription>
+              This is a mock view of student attendance. For live tracking, please refer to the Driver Dashboard.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh] p-1 mt-4">
+             {students.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">No student data available for attendance.</p>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Student Name</TableHead>
+                      <TableHead>Class/Grade</TableHead>
+                      <TableHead>Last Status</TableHead>
+                      <TableHead>Last Updated</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {students.map((student) => (
+                      <TableRow key={student.id}>
+                        <TableCell className="font-medium">{student.name}</TableCell>
+                        <TableCell>{student.classGrade}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              student.lastAttendanceStatus === 'Picked Up' ? 'default' :
+                              student.lastAttendanceStatus === 'Dropped Off' ? 'secondary' :
+                              student.lastAttendanceStatus === 'Absent' ? 'destructive' : 'outline'
+                            }
+                            className={
+                              student.lastAttendanceStatus === 'Picked Up' ? 'bg-green-500 hover:bg-green-600 text-white' :
+                              student.lastAttendanceStatus === 'Dropped Off' ? 'bg-blue-500 hover:bg-blue-600 text-white' :
+                              student.lastAttendanceStatus === 'Absent' ? 'bg-red-500 hover:bg-red-600 text-white' :
+                              'border-yellow-500 text-yellow-600'
+                            }
+                          >
+                            {student.lastAttendanceStatus || 'N/A'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                            {student.lastAttendanceTimestamp || 'N/A'}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+          </ScrollArea>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setIsAttendanceDialogOpen(false)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

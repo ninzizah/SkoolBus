@@ -24,11 +24,14 @@ export const childFormSchema = z.object({
   age: z.coerce.number().int().positive("Age must be a positive number.").min(1, "Age must be at least 1."),
   classGrade: z.string().min(1, "Class/Grade is required."),
   photoDataUrl: z.string().optional().describe("A data URI of the child's photo. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
-  parentId: z.string().min(1, "Parent selection is required."), // Changed from .uuid()
+  parentId: z.string().min(1, "Parent selection is required."),
   schoolId: z.string().min(1, "School selection is required."),
   assignedRouteId: z.string().optional(),
 });
 export type ChildFormData = z.infer<typeof childFormSchema>;
+
+export type ChildAttendanceStatus = 'Pending' | 'Picked Up' | 'Dropped Off' | 'Absent';
+
 
 export interface Child extends Omit<ChildFormData, 'photoDataUrl' | 'assignedRouteId' | 'parentId' | 'schoolId'>{
   id: string;
@@ -39,6 +42,8 @@ export interface Child extends Omit<ChildFormData, 'photoDataUrl' | 'assignedRou
   schoolName?: string;
   assignedRouteId?: string;
   assignedRouteName?: string;
+  lastAttendanceStatus?: ChildAttendanceStatus;
+  lastAttendanceTimestamp?: string; // e.g., "2024-07-30 08:15 AM"
 }
 
 // Bus Route Types
@@ -50,7 +55,7 @@ export interface BusRoute {
 }
 
 // Driver Dashboard Types
-export type ChildAttendanceStatus = 'Pending' | 'Picked Up' | 'Dropped Off';
+// ChildAttendanceStatus is already defined above for Child interface
 
 export interface ChildAttendance {
   id: string; // Child's ID
