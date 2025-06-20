@@ -88,7 +88,7 @@ export default function ParentsPage() {
     <div className="container mx-auto p-4 md:p-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold font-headline text-primary flex items-center"><Users className="mr-2 h-8 w-8"/>Kontis z'Ababyeyi</h1>
+          <h1 className="text-3xl font-bold font-headline text-primary flex items-center"><Users className="mr-2 h-8 w-8"/>Konti z'Ababyeyi</h1>
           <p className="text-muted-foreground">Genzura amakuru y'ababyeyi n'abana babo.</p>
         </div>
         <Button onClick={() => setIsAddDialogOpen(true)} className="bg-accent hover:bg-accent/90 text-accent-foreground">
