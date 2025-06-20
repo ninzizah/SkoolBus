@@ -8,7 +8,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
-import { MapPin, Users, CheckCircle, XCircle, AlertTriangle, Clock, ListChecks, Bus as BusIcon, CalendarDays, MessageSquareWarning, Send } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { MapPin, Users, CheckCircle, XCircle, AlertTriangle, Clock, ListChecks, Bus as BusIcon, CalendarDays, MessageSquareWarning, Send, History as HistoryIcon } from 'lucide-react';
 import type { AssignedRoute, ChildAttendance, RouteStop } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -54,6 +55,25 @@ const initialMockRoute: AssignedRoute = {
   ],
 };
 
+// Mock data for past routes
+interface PastRoute {
+  id: string;
+  routeName: string;
+  date: string;
+  status: 'Completed' | 'Partially Completed' | 'Cancelled';
+  busNumber?: string;
+  driverNotes?: string;
+}
+
+const mockPastRoutes: PastRoute[] = [
+  { id: 'hist-001', routeName: 'Morning Route - West District', date: '2024-07-28', status: 'Completed', busNumber: 'BUS-42', driverNotes: 'All smooth.' },
+  { id: 'hist-002', routeName: 'Afternoon Route - East District', date: '2024-07-28', status: 'Completed', busNumber: 'BUS-17', driverNotes: 'Slight delay due to traffic on 5th Ave.' },
+  { id: 'hist-003', routeName: 'Morning Route - West District', date: '2024-07-27', status: 'Completed', busNumber: 'BUS-42' },
+  { id: 'hist-004', routeName: 'Special Event Shuttle', date: '2024-07-26', status: 'Cancelled', driverNotes: 'Event cancelled by school.' },
+  { id: 'hist-005', routeName: 'Morning Route - North District', date: '2024-07-25', status: 'Partially Completed', busNumber: 'BUS-07', driverNotes: 'Bus breakdown, alternate arranged.' },
+];
+
+
 // Custom SteeringWheelIcon as lucide-react might not have it directly or to ensure specific style
 const SteeringWheelIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -82,6 +102,7 @@ export default function DriverDashboardPage() {
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
   const [isReportIssueDialogOpen, setIsReportIssueDialogOpen] = useState(false);
   const [issueDescription, setIssueDescription] = useState('');
+  const [isRouteHistoryDialogOpen, setIsRouteHistoryDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const updateChildStatus = (stopId: string, childId: string, status: ChildAttendance['status']) => {
@@ -135,7 +156,7 @@ export default function DriverDashboardPage() {
 
 
   const handleViewRouteHistory = () => {
-    toast({ title: "Feature Not Implemented", description: "Viewing route history is coming soon!" });
+    setIsRouteHistoryDialogOpen(true);
   };
 
   const handleContactDispatch = () => {
@@ -386,6 +407,68 @@ export default function DriverDashboardPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Route History Dialog */}
+      <Dialog open={isRouteHistoryDialogOpen} onOpenChange={setIsRouteHistoryDialogOpen}>
+        <DialogContent className="sm:max-w-lg md:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-headline flex items-center">
+              <HistoryIcon className="mr-2 h-6 w-6 text-primary" /> Route History
+            </DialogTitle>
+            <DialogDescription>
+              Review your past completed and partially completed routes.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh] p-1">
+            <div className="py-4 px-2">
+              {mockPastRoutes.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Route Name</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Bus</TableHead>
+                      <TableHead>Notes</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {mockPastRoutes.map((route) => (
+                      <TableRow key={route.id}>
+                        <TableCell className="font-medium">{route.routeName}</TableCell>
+                        <TableCell>{route.date}</TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant={
+                              route.status === 'Completed' ? 'default' : 
+                              route.status === 'Cancelled' ? 'destructive' : 'secondary'
+                            }
+                            className={
+                              route.status === 'Completed' ? 'bg-green-500 hover:bg-green-600' :
+                              route.status === 'Cancelled' ? 'bg-red-500 hover:bg-red-600' :
+                              'bg-yellow-500 hover:bg-yellow-600'
+                            }
+                          >
+                            {route.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{route.busNumber || 'N/A'}</TableCell>
+                        <TableCell className="text-xs">{route.driverNotes || '-'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <p className="text-muted-foreground text-center py-8">No past route data available.</p>
+              )}
+            </div>
+          </ScrollArea>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsRouteHistoryDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
+
