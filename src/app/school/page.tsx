@@ -6,11 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { School as SchoolIcon, Users, PlusCircle, Edit3, Trash2 } from 'lucide-react';
 import type { Child, School } from '@/types';
+import EditStudentForm from '@/components/children/edit-student-form';
+import type { EditStudentFormData } from '@/components/children/edit-student-form';
 import { useToast } from "@/hooks/use-toast";
 
-// This mock data represents all children in the system.
 const allMockChildren: Child[] = [
   { id: 'c1', name: 'Leo Wonderland', age: 7, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: '2nd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=LW', assignedRouteId: undefined, assignedRouteName: undefined },
   { id: 'c2', name: 'Mia Wonderland', age: 5, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: 'Kindergarten', photoDataUrl: undefined, assignedRouteId: 'route1', assignedRouteName: 'Morning Star Route' },
@@ -19,8 +21,6 @@ const allMockChildren: Child[] = [
   { id: 'c5', name: 'Max Wonderland', age: 6, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p4', parentName: 'Diana Prince', classGrade: '1st Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=MW', assignedRouteId: 'route1', assignedRouteName: 'Morning Star Route' },
 ];
 
-// For this page, we assume a specific school is being viewed.
-// In a real app, this would likely come from a route parameter or user context.
 const currentSchool: Pick<School, 'id' | 'name'> = {
   id: 'sch1',
   name: 'Wonderland Elementary',
@@ -28,23 +28,24 @@ const currentSchool: Pick<School, 'id' | 'name'> = {
 
 export default function SchoolPortalPage() {
   const [students, setStudents] = useState<Child[]>([]);
+  const [isEditStudentDialogOpen, setIsEditStudentDialogOpen] = useState(false);
+  const [editingStudent, setEditingStudent] = useState<Child | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    // Filter children who belong to the currentSchool
     const schoolStudents = allMockChildren.filter(child => child.schoolId === currentSchool.id);
     setStudents(schoolStudents);
-  }, []); // Empty dependency array: runs once on mount
+  }, []);
 
   const handleAddStudent = () => {
     const newStudentId = `new-c-${Math.random().toString(36).substring(2, 9)}`;
     const newStudent: Child = {
       id: newStudentId,
       name: `New Student ${newStudentId.substring(0,4)}`,
-      age: 0, // Placeholder age
+      age: 0, 
       schoolId: currentSchool.id,
       schoolName: currentSchool.name,
-      parentId: 'new-p-placeholder', // Placeholder parentId
+      parentId: 'new-p-placeholder', 
       parentName: 'To be assigned',
       classGrade: 'To be assigned',
       photoDataUrl: `https://placehold.co/50x50.png?text=N`,
@@ -58,21 +59,22 @@ export default function SchoolPortalPage() {
     });
   };
 
-  const handleEditStudent = (studentId: string) => {
-    const studentToEdit = students.find(student => student.id === studentId);
-    if (!studentToEdit) return;
+  const openEditStudentDialog = (student: Child) => {
+    setEditingStudent(student);
+    setIsEditStudentDialogOpen(true);
+  };
 
-    const newName = window.prompt("Enter new student name:", studentToEdit.name);
-    if (newName && newName.trim() !== "") {
-      setStudents(prevStudents =>
-        prevStudents.map(student =>
-          student.id === studentId ? { ...student, name: newName.trim() } : student
-        )
-      );
-      toast({ title: "Student Updated", description: `Student's name changed to ${newName.trim()}.` });
-    } else if (newName === "") {
-      toast({ title: "Update Cancelled", description: "Student name cannot be empty.", variant: "destructive" });
-    }
+  const handleUpdateStudent = (data: EditStudentFormData) => {
+    if (!editingStudent) return;
+
+    setStudents(prevStudents =>
+      prevStudents.map(s =>
+        s.id === editingStudent.id ? { ...s, ...data, age: Number(data.age) } : s
+      )
+    );
+    setIsEditStudentDialogOpen(false);
+    setEditingStudent(null);
+    toast({ title: "Student Updated", description: `${data.name}'s details have been updated.` });
   };
 
   const handleDeleteStudent = (studentId: string) => {
@@ -135,7 +137,7 @@ export default function SchoolPortalPage() {
                     <TableCell>{student.classGrade}</TableCell>
                     <TableCell>{student.parentName || 'N/A'}</TableCell>
                     <TableCell className="text-right space-x-2">
-                      <Button variant="outline" size="icon" onClick={() => handleEditStudent(student.id)} aria-label="Edit student">
+                      <Button variant="outline" size="icon" onClick={() => openEditStudentDialog(student)} aria-label="Edit student">
                         <Edit3 className="h-4 w-4" />
                       </Button>
                       <Button variant="destructive" size="icon" onClick={() => handleDeleteStudent(student.id)} aria-label="Delete student">
@@ -149,6 +151,30 @@ export default function SchoolPortalPage() {
           )}
         </CardContent>
       </Card>
+      
+      {/* Edit Student Dialog */}
+      {editingStudent && (
+        <Dialog open={isEditStudentDialogOpen} onOpenChange={setIsEditStudentDialogOpen}>
+          <DialogContent className="sm:max-w-[480px]">
+            <DialogHeader>
+              <DialogTitle className="font-headline flex items-center">
+                <Edit3 className="mr-2 h-5 w-5 text-primary" /> Edit Student Details
+              </DialogTitle>
+              <DialogDescription>Update the details for {editingStudent.name}.</DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <EditStudentForm 
+                student={editingStudent} 
+                onFormSubmit={handleUpdateStudent}
+                onCancel={() => {
+                  setIsEditStudentDialogOpen(false);
+                  setEditingStudent(null);
+                }}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
 
       <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
          <Card className="shadow-md">

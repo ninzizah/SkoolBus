@@ -15,74 +15,40 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import type { ParentFormData } from '@/types';
+import type { Parent, ParentFormData } from '@/types';
 import { parentFormSchema } from '@/types';
 import { Loader2 } from "lucide-react";
 
-interface AddParentFormProps {
-  onParentAdded: (parentData: ParentFormData) => void;
+interface EditParentFormProps {
+  parent: Parent;
+  onFormSubmit: (data: ParentFormData) => void;
+  onCancel: () => void;
 }
 
-// Mock server action
-async function addParentAction(data: ParentFormData): Promise<{ success: boolean; message: string }> {
-  console.log("Adding parent:", data);
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  // Simulate success/failure
-  if (data.name.toLowerCase() === "error") {
-    return { success: false, message: "Failed to add parent due to a server error." };
-  }
-  return { success: true, message: `Parent ${data.name} added successfully!` };
-}
-
-
-export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
-  const { toast } = useToast();
+export default function EditParentForm({ parent, onFormSubmit, onCancel }: EditParentFormProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm<ParentFormData>({
     resolver: zodResolver(parentFormSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phoneNumber: "",
-      address: "",
+      name: parent.name || "",
+      email: parent.email || "",
+      phoneNumber: parent.phoneNumber || "",
+      address: parent.address || "",
     },
   });
 
   async function onSubmit(data: ParentFormData) {
     setIsSubmitting(true);
-    try {
-      const result = await addParentAction(data); // Call server action
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: result.message,
-        });
-        onParentAdded(data); // Call the callback prop
-        form.reset();
-      } else {
-        toast({
-          title: "Error",
-          description: result.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 700));
+    onFormSubmit(data);
+    setIsSubmitting(false);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="name"
@@ -90,7 +56,7 @@ export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
             <FormItem>
               <FormLabel>Full Name</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., shema honore" {...field} />
+                <Input placeholder="e.g., Shema Honore" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -114,7 +80,7 @@ export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
           name="phoneNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number (Optional)</FormLabel>
+              <FormLabel>Phone Number</FormLabel>
               <FormControl>
                 <Input type="tel" placeholder="e.g., (250) 123-4567" {...field} />
               </FormControl>
@@ -127,7 +93,7 @@ export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address (Optional)</FormLabel>
+              <FormLabel>Address</FormLabel>
               <FormControl>
                 <Textarea placeholder="e.g., KG 17 Ave, Kigali" {...field} />
               </FormControl>
@@ -135,16 +101,21 @@ export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isSubmitting}>
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Adding...
-            </>
-          ) : (
-            "Add Parent Account"
-          )}
-        </Button>
+        <div className="flex justify-end space-x-2 pt-2">
+            <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
+                Cancel
+            </Button>
+            <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={isSubmitting}>
+            {isSubmitting ? (
+                <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+                </>
+            ) : (
+                "Save Changes"
+            )}
+            </Button>
+        </div>
       </form>
     </Form>
   );
