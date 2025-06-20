@@ -39,7 +39,7 @@ async function addChildAction(data: ChildFormData): Promise<{ success: boolean; 
     return { success: false, message: "Failed to add child due to a server error." };
   }
   const childId = `c-${Math.random().toString(36).substring(2, 9)}`;
-  return { success: true, message: `Child ${data.name} added successfully!`, childId };
+  return { success: true, message: `Umwana ${data.name} yongewemo neza!`, childId };
 }
 
 export default function AddChildForm({ parents, schools, onChildAdded }: AddChildFormProps) {
@@ -83,16 +83,13 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
       const result = await addChildAction(data);
       if (result.success && result.childId) {
         toast({
-          title: "Success",
-          description: `${result.message} (School: ${selectedSchool?.name || 'N/A'})`,
+          title: "Byakunze",
+          description: `${result.message} (Ishuri: ${selectedSchool?.name || 'N/A'})`,
         });
-        // Construct a partial Child object to pass to onChildAdded
-        // The parent component (ChildrenPage) will fill in parentName and schoolName
         const newChildData: Child = {
           ...data,
-          age: Number(data.age), // Ensure age is a number
+          age: Number(data.age), 
           id: result.childId,
-          // parentName and schoolName will be added by the parent component
         };
         onChildAdded(newChildData);
         form.reset();
@@ -102,15 +99,15 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
         }
       } else {
         toast({
-          title: "Error",
-          description: result.message || "An unknown error occurred.",
+          title: "Byanze",
+          description: result.message || "Habayeho ikibazo kitazwi.",
           variant: "destructive",
         });
       }
     } catch (error) {
        toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: "Byanze",
+        description: "Habayeho ikibazo kitateganijwe. Nyamuneka gerageza futhi.",
         variant: "destructive",
       });
     } finally {
@@ -126,9 +123,9 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Child's Full Name</FormLabel>
+              <FormLabel>Amazina y'Umwana Yuzuye</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Timmy Turner" {...field} />
+                <Input placeholder="Urugero: Keza Aline" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -139,9 +136,9 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
           name="age"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Age</FormLabel>
+              <FormLabel>Imyaka</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="e.g., 8" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
+                <Input type="number" placeholder="Urugero: 8" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -152,11 +149,11 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
           name="schoolId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>School</FormLabel>
+              <FormLabel>Ishuri</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a school" />
+                    <SelectValue placeholder="Hitamo ishuri" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -176,9 +173,9 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
           name="classGrade"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Class/Grade</FormLabel>
+              <FormLabel>Umwaka/Ishami</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., 3rd Grade, Class B" {...field} />
+                <Input placeholder="Urugero: P3, S2 A" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -189,11 +186,11 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
           name="photoDataUrl" 
           render={({ field }) => ( 
             <FormItem>
-              <FormLabel>Photo</FormLabel>
+              <FormLabel>Ifoto</FormLabel>
               <FormControl>
                 <div className="flex flex-col items-center space-y-2">
                   {photoPreview ? (
-                    <img src={photoPreview} alt="Child preview" className="h-24 w-24 rounded-full object-cover border" data-ai-hint="child photo" />
+                    <img src={photoPreview} alt="Ifoto y'umwana" className="h-24 w-24 rounded-full object-cover border" data-ai-hint="umwana ifoto" />
                   ) : (
                     <div className="h-24 w-24 rounded-full bg-muted flex items-center justify-center border">
                       <UploadCloud className="h-10 w-10 text-muted-foreground" />
@@ -217,11 +214,11 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
           name="parentId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Parent/Guardian</FormLabel>
+              <FormLabel>Umubyeyi/Umurezi</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a parent" />
+                    <SelectValue placeholder="Hitamo umubyeyi" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -240,10 +237,10 @@ export default function AddChildForm({ parents, schools, onChildAdded }: AddChil
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Adding Child...
+              Birimo Kongerwamo...
             </>
           ) : (
-            "Add Child Profile"
+            "Ongeramo Amakuru y'Umwana"
           )}
         </Button>
       </form>

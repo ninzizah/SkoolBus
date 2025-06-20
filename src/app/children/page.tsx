@@ -15,27 +15,27 @@ import { useToast } from "@/hooks/use-toast";
 
 
 const initialMockChildren: Child[] = [
-  { id: 'c1', name: 'Leo Wonderland', age: 7, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: '1', parentName: 'Alice Wonderland', classGrade: '2nd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=Leo', assignedRouteId: undefined, assignedRouteName: undefined },
-  { id: 'c2', name: 'Mia Wonderland', age: 5, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: '1', parentName: 'Alice Wonderland', classGrade: 'Kindergarten', photoDataUrl: undefined, assignedRouteId: 'route1', assignedRouteName: 'Morning Star Route' },
-  { id: 'c3', name: 'Scoop The Digger', age: 8, schoolId: 'sch2', schoolName: 'Construction Academy', parentId: '2', parentName: 'Bob The Builder', classGrade: '3rd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=Scoop', assignedRouteId: undefined, assignedRouteName: undefined },
+  { id: 'c1', name: 'Mugisha Kevin', age: 7, schoolId: 'sch1', schoolName: 'Groupe Scolaire Kacyiru', parentId: 'p1', parentName: 'Shema Honore', classGrade: 'P2', photoDataUrl: 'https://placehold.co/50x50.png?text=MK', assignedRouteId: undefined, assignedRouteName: undefined },
+  { id: 'c2', name: 'Ineza Ange', age: 5, schoolId: 'sch1', schoolName: 'Groupe Scolaire Kacyiru', parentId: 'p1', parentName: 'Shema Honore', classGrade: 'Nursery', photoDataUrl: undefined, assignedRouteId: 'route1', assignedRouteName: 'Umuseke Route' },
+  { id: 'c3', name: 'Gatete Paul', age: 8, schoolId: 'sch2', schoolName: 'Lycee de Kigali', parentId: 'p2', parentName: 'Uwamahoro Queen', classGrade: 'P3', photoDataUrl: 'https://placehold.co/50x50.png?text=GP', assignedRouteId: undefined, assignedRouteName: undefined },
 ];
 
 const mockParentsForSelection: Pick<Parent, 'id' | 'name'>[] = [
-  { id: '1', name: 'Alice Wonderland' },
-  { id: '2', name: 'Bob The Builder' },
-  { id: '3', name: 'Charlie Brown' },
+  { id: 'p1', name: 'Shema Honore' },
+  { id: 'p2', name: 'Uwamahoro Queen' },
+  { id: 'p3', name: 'Nsabimana Eric' },
 ];
 
 const mockSchoolsForSelection: Pick<School, 'id' | 'name'>[] = [
-  { id: 'sch1', name: 'Wonderland Elementary' },
-  { id: 'sch2', name: 'Construction Academy' },
-  { id: 'sch3', name: 'Oakwood High' },
+  { id: 'sch1', name: 'Groupe Scolaire Kacyiru' },
+  { id: 'sch2', name: 'Lycee de Kigali' },
+  { id: 'sch3', name: 'Green Hills Academy' },
 ];
 
 const mockBusRoutes: BusRoute[] = [
-  { id: 'route1', name: 'Morning Star Route', pickupTime: '07:30 AM', driverName: 'Mr. Sunny Day' },
-  { id: 'route2', name: 'Afternoon Comet Line', pickupTime: '03:45 PM', driverName: 'Ms. Luna Night' },
-  { id: 'route3', name: 'Express Shuttle Alpha', pickupTime: '08:00 AM', driverName: 'Capt. Speedy Gonzales' },
+  { id: 'route1', name: 'Umuseke Route', pickupTime: '07:30 AM', driverName: 'Makuza Jean' },
+  { id: 'route2', name: 'Inyange Line', pickupTime: '03:45 PM', driverName: 'Mukamana Alice' },
+  { id: 'route3', name: 'Express Kicukiro', pickupTime: '08:00 AM', driverName: 'Habimana David' },
 ];
 
 
@@ -61,16 +61,16 @@ export default function ChildrenPage() {
     const childToEdit = children.find(child => child.id === id);
     if (!childToEdit) return;
 
-    const newName = window.prompt("Enter new child name:", childToEdit.name);
+    const newName = window.prompt("Andika izina rishya ry'umwana:", childToEdit.name);
     if (newName && newName.trim() !== "") {
       setChildren(prevChildren =>
         prevChildren.map(child =>
           child.id === id ? { ...child, name: newName.trim() } : child
         )
       );
-      toast({ title: "Child Updated", description: `Child's name changed to ${newName.trim()}.` });
+      toast({ title: "Umwana Yahinduwe", description: `Izina ry'umwana ryahinduwe ${newName.trim()}.` });
     } else if (newName === "") {
-      toast({ title: "Update Cancelled", description: "Child's name cannot be empty.", variant: "destructive" });
+      toast({ title: "Guhindura Byahagaritswe", description: "Izina ry'umwana ntirishobora kuba ubusa.", variant: "destructive" });
     }
   };
 
@@ -78,9 +78,9 @@ export default function ChildrenPage() {
     const childToDelete = children.find(child => child.id === id);
     if (!childToDelete) return;
 
-    if (window.confirm(`Are you sure you want to delete ${childToDelete.name}'s profile?`)) {
+    if (window.confirm(`Urifuza gusiba amakuru ya ${childToDelete.name}?`)) {
       setChildren(prevChildren => prevChildren.filter(child => child.id !== id));
-      toast({ title: "Child Deleted", description: `${childToDelete.name}'s profile has been deleted.` });
+      toast({ title: "Umwana Yasibwe", description: `Amakuru ya ${childToDelete.name} yasibwe.` });
     }
   };
 
@@ -102,8 +102,8 @@ export default function ChildrenPage() {
           )
         );
         toast({
-          title: "Route Assigned",
-          description: `${selectedChildForRoute.name} has been assigned to ${route.name}.`,
+          title: "Umwanya Wahawe",
+          description: `${selectedChildForRoute.name} yahawe umwanya kuri ${route.name}.`,
         });
       }
     } else if (selectedChildForRoute && !selectedRouteId) { 
@@ -115,8 +115,8 @@ export default function ChildrenPage() {
           )
         );
         toast({
-          title: "Route Unassigned",
-          description: `${selectedChildForRoute.name} has been unassigned from any route.`,
+          title: "Umwanya Wakuweho",
+          description: `${selectedChildForRoute.name} yakuwe ku mwanya uwo ariwo wose.`,
         });
     }
     setIsAssignRouteDialogOpen(false);
@@ -127,8 +127,8 @@ export default function ChildrenPage() {
     <div className="container mx-auto p-4 md:p-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold font-headline text-primary">Child Profiles</h1>
-          <p className="text-muted-foreground">Manage children's profiles and their bus route assignments.</p>
+          <h1 className="text-3xl font-bold font-headline text-primary">Amakuru y'Abana</h1>
+          <p className="text-muted-foreground">Genzura amakuru y'abana n'imyanya yabo mu modoka.</p>
         </div>
       </div>
 
@@ -136,20 +136,20 @@ export default function ChildrenPage() {
         <div> 
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle className="font-headline">Children List</CardTitle>
-              <CardDescription>View and manage children registered in the system.</CardDescription>
+              <CardTitle className="font-headline">Urutonde rw'Abana</CardTitle>
+              <CardDescription>Reba kandi ucunge abana banditse muri sisitemu.</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Child Name</TableHead>
-                    <TableHead>Age</TableHead>
-                    <TableHead>School</TableHead>
-                    <TableHead>Class/Grade</TableHead>
-                    <TableHead>Parent</TableHead>
-                    <TableHead>Assigned Route</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>Izina ry'Umwana</TableHead>
+                    <TableHead>Imyaka</TableHead>
+                    <TableHead>Ishuri</TableHead>
+                    <TableHead>Umwaka/Ishami</TableHead>
+                    <TableHead>Umubyeyi</TableHead>
+                    <TableHead>Umwanya mu Modoka</TableHead>
+                    <TableHead className="text-right">Ibikorwa</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -162,15 +162,15 @@ export default function ChildrenPage() {
                       <TableCell>{child.schoolName || 'N/A'}</TableCell>
                       <TableCell>{child.classGrade}</TableCell>
                       <TableCell>{child.parentName || 'N/A'}</TableCell>
-                      <TableCell>{child.assignedRouteName || <span className="text-muted-foreground italic">Not Assigned</span>}</TableCell>
+                      <TableCell>{child.assignedRouteName || <span className="text-muted-foreground italic">Nta mwanya afite</span>}</TableCell>
                       <TableCell className="text-right space-x-2">
-                        <Button variant="outline" size="icon" onClick={() => openAssignRouteDialog(child)} aria-label="Assign Route">
+                        <Button variant="outline" size="icon" onClick={() => openAssignRouteDialog(child)} aria-label="Guha Umwanya">
                           <Bus className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="icon" onClick={() => handleEditChild(child.id)} aria-label="Edit child">
+                        <Button variant="outline" size="icon" onClick={() => handleEditChild(child.id)} aria-label="Hindura Umwana">
                           <Edit3 className="h-4 w-4" />
                         </Button>
-                        <Button variant="destructive" size="icon" onClick={() => handleDeleteChild(child.id)} aria-label="Delete child">
+                        <Button variant="destructive" size="icon" onClick={() => handleDeleteChild(child.id)} aria-label="Siba Umwana">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </TableCell>
@@ -179,7 +179,7 @@ export default function ChildrenPage() {
                 </TableBody>
               </Table>
                {children.length === 0 && (
-                <p className="text-center text-muted-foreground py-8">No children added yet.</p>
+                <p className="text-center text-muted-foreground py-8">Nta bana barongerwamo.</p>
               )}
             </CardContent>
           </Card>
@@ -189,9 +189,9 @@ export default function ChildrenPage() {
            <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline flex items-center">
-                <PlusCircle className="mr-2 h-5 w-5 text-accent" /> Add New Child
+                <PlusCircle className="mr-2 h-5 w-5 text-accent" /> Ongeramo Umwana Mushya
               </CardTitle>
-              <CardDescription>Add a child's profile to the system.</CardDescription>
+              <CardDescription>Ongeramo amakuru y'umwana muri sisitemu.</CardDescription>
             </CardHeader>
             <CardContent>
               <AddChildForm parents={mockParentsForSelection} schools={mockSchoolsForSelection} onChildAdded={handleAddChild} />
@@ -204,9 +204,9 @@ export default function ChildrenPage() {
         <Dialog open={isAssignRouteDialogOpen} onOpenChange={setIsAssignRouteDialogOpen}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle className="font-headline flex items-center"><RouteIcon className="mr-2 h-5 w-5 text-primary"/>Assign Bus Route for {selectedChildForRoute.name}</DialogTitle>
+              <DialogTitle className="font-headline flex items-center"><RouteIcon className="mr-2 h-5 w-5 text-primary"/>Guha Umwanya mu Modoka {selectedChildForRoute.name}</DialogTitle>
               <DialogDescription>
-                Select a bus route for {selectedChildForRoute.name}. Current: {selectedChildForRoute.assignedRouteName || "None"}
+                Hitamo umwanya mu modoka wa {selectedChildForRoute.name}. Ubu afite: {selectedChildForRoute.assignedRouteName || "Ntawo"}
               </DialogDescription>
             </DialogHeader>
             <div className="py-4">
@@ -218,7 +218,7 @@ export default function ChildrenPage() {
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="UNASSIGN" id="route-unassign" />
                     <Label htmlFor="route-unassign" className="font-normal italic text-muted-foreground">
-                      Unassign Route
+                      Kura ku Mwanya
                     </Label>
                   </div>
                 {mockBusRoutes.map((route) => (
@@ -227,7 +227,7 @@ export default function ChildrenPage() {
                     <Label htmlFor={route.id} className="font-normal flex-1 cursor-pointer">
                       <div className="font-medium text-foreground">{route.name}</div>
                       <div className="text-sm text-muted-foreground">
-                        Pickup: {route.pickupTime} - Driver: {route.driverName}
+                        Isaha: {route.pickupTime} - Umushoferi: {route.driverName}
                       </div>
                     </Label>
                   </div>
@@ -235,8 +235,8 @@ export default function ChildrenPage() {
               </RadioGroup>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAssignRouteDialogOpen(false)}>Cancel</Button>
-              <Button onClick={handleAssignRoute} className="bg-primary hover:bg-primary/90">Assign Route</Button>
+              <Button variant="outline" onClick={() => setIsAssignRouteDialogOpen(false)}>Hagarika</Button>
+              <Button onClick={handleAssignRoute} className="bg-primary hover:bg-primary/90">Emeza Umwanya</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

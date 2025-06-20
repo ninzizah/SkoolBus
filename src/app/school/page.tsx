@@ -17,30 +17,30 @@ import type { EditStudentFormData } from '@/components/children/edit-student-for
 import { useToast } from "@/hooks/use-toast";
 
 const allMockChildren: Child[] = [
-  { id: 'c1', name: 'Leo Wonderland', age: 7, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: '2nd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=LW', assignedRouteId: 'sch1-route1', assignedRouteName: 'Wonderland Morning A', lastAttendanceStatus: 'Picked Up', lastAttendanceTimestamp: '2024-07-30 07:35 AM' },
-  { id: 'c2', name: 'Mia Wonderland', age: 5, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p1', parentName: 'Alice Wonderland', classGrade: 'Kindergarten', photoDataUrl: undefined, assignedRouteId: 'sch1-route1', assignedRouteName: 'Wonderland Morning A', lastAttendanceStatus: 'Dropped Off', lastAttendanceTimestamp: '2024-07-30 08:10 AM' },
-  { id: 'c3', name: 'Sam Construction', age: 8, schoolId: 'sch2', schoolName: 'Construction Academy', parentId: 'p2', parentName: 'Bob The Builder', classGrade: '3rd Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=SC', assignedRouteId: undefined, assignedRouteName: undefined, lastAttendanceStatus: 'Pending', lastAttendanceTimestamp: 'N/A' },
-  { id: 'c4', name: 'Lily Oakwood', age: 9, schoolId: 'sch3', schoolName: 'Oakwood High', parentId: 'p3', parentName: 'Charlie Brown', classGrade: '4th Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=LO', assignedRouteId: 'route2', assignedRouteName: 'Afternoon Comet Line', lastAttendanceStatus: 'Picked Up', lastAttendanceTimestamp: '2024-07-29 03:50 PM'},
-  { id: 'c5', name: 'Max Wonderland', age: 6, schoolId: 'sch1', schoolName: 'Wonderland Elementary', parentId: 'p4', parentName: 'Diana Prince', classGrade: '1st Grade', photoDataUrl: 'https://placehold.co/50x50.png?text=MW', assignedRouteId: 'sch1-route2', assignedRouteName: 'Wonderland Afternoon B', lastAttendanceStatus: 'Absent', lastAttendanceTimestamp: '2024-07-30 07:00 AM' },
+  { id: 'c1', name: 'Mugisha Kevin', age: 7, schoolId: 'sch1', schoolName: 'Groupe Scolaire Kacyiru', parentId: 'p1', parentName: 'Shema Honore', classGrade: 'P2', photoDataUrl: 'https://placehold.co/50x50.png?text=MK', assignedRouteId: 'sch1-route1', assignedRouteName: 'GS Kacyiru Umuseke A', lastAttendanceStatus: 'Picked Up', lastAttendanceTimestamp: '2024-07-30 07:35 AM' },
+  { id: 'c2', name: 'Ineza Ange', age: 5, schoolId: 'sch1', schoolName: 'Groupe Scolaire Kacyiru', parentId: 'p1', parentName: 'Shema Honore', classGrade: 'Nursery', photoDataUrl: undefined, assignedRouteId: 'sch1-route1', assignedRouteName: 'GS Kacyiru Umuseke A', lastAttendanceStatus: 'Dropped Off', lastAttendanceTimestamp: '2024-07-30 08:10 AM' },
+  { id: 'c3', name: 'Gatete Paul', age: 8, schoolId: 'sch2', schoolName: 'Lycee de Kigali', parentId: 'p2', parentName: 'Uwamahoro Queen', classGrade: 'P3', photoDataUrl: 'https://placehold.co/50x50.png?text=GP', assignedRouteId: undefined, assignedRouteName: undefined, lastAttendanceStatus: 'Pending', lastAttendanceTimestamp: 'N/A' },
+  { id: 'c4', name: 'Umutesi Divine', age: 9, schoolId: 'sch3', schoolName: 'Green Hills Academy', parentId: 'p3', parentName: 'Nsabimana Eric', classGrade: 'P4', photoDataUrl: 'https://placehold.co/50x50.png?text=UD', assignedRouteId: 'route2', assignedRouteName: 'Inyange Line', lastAttendanceStatus: 'Picked Up', lastAttendanceTimestamp: '2024-07-29 03:50 PM'},
+  { id: 'c5', name: 'Shema Ryan', age: 6, schoolId: 'sch1', schoolName: 'Groupe Scolaire Kacyiru', parentId: 'p4', parentName: 'Keza Diane', classGrade: 'P1', photoDataUrl: 'https://placehold.co/50x50.png?text=SR', assignedRouteId: 'sch1-route2', assignedRouteName: 'GS Kacyiru Inyange B', lastAttendanceStatus: 'Absent', lastAttendanceTimestamp: '2024-07-30 07:00 AM' },
 ];
 
 const currentSchool: Pick<School, 'id' | 'name'> = {
   id: 'sch1',
-  name: 'Wonderland Elementary',
+  name: 'Groupe Scolaire Kacyiru',
 };
 
 const initialMockSchoolRoutes: BusRoute[] = [
-  { id: 'sch1-route1', name: 'Wonderland Morning A', pickupTime: '07:30 AM', driverName: 'Mr. Sunny' },
-  { id: 'sch1-route2', name: 'Wonderland Afternoon B', pickupTime: '03:45 PM', driverName: 'Ms. Luna' },
-  { id: 'sch1-route3', name: 'Wonderland Early Bird', pickupTime: '07:00 AM', driverName: 'To be assigned' },
+  { id: 'sch1-route1', name: 'GS Kacyiru Umuseke A', pickupTime: '07:30 AM', driverName: 'Makuza Jean' },
+  { id: 'sch1-route2', name: 'GS Kacyiru Inyange B', pickupTime: '03:45 PM', driverName: 'Mukamana Alice' },
+  { id: 'sch1-route3', name: 'GS Kacyiru kare', pickupTime: '07:00 AM', driverName: 'Ntawe' },
 ];
 
 const mockDrivers: { id: string; name: string }[] = [
-    { id: 'driver1', name: 'Mr. Sunny' },
-    { id: 'driver2', name: 'Ms. Luna' },
-    { id: 'driver3', name: 'Capt. Reliable' },
-    { id: 'driver4', name: 'Sgt. Speedy' },
-    { id: 'driver5', name: 'Dr. Navigator' },
+    { id: 'driver1', name: 'Makuza Jean' },
+    { id: 'driver2', name: 'Mukamana Alice' },
+    { id: 'driver3', name: 'Habimana David' },
+    { id: 'driver4', name: 'Kwizera Emmanuel' },
+    { id: 'driver5', name: 'Uwineza Sandrine' },
 ];
 
 
@@ -63,13 +63,13 @@ export default function SchoolPortalPage() {
     const newStudentId = `new-c-${Math.random().toString(36).substring(2, 9)}`;
     const newStudent: Child = {
       id: newStudentId,
-      name: `New Student ${newStudentId.substring(0,4)}`,
+      name: `Umunyeshuri Mushya ${newStudentId.substring(0,4)}`,
       age: 0, 
       schoolId: currentSchool.id,
       schoolName: currentSchool.name,
       parentId: 'new-p-placeholder', 
-      parentName: 'To be assigned',
-      classGrade: 'To be assigned',
+      parentName: 'Ntawe',
+      classGrade: 'Ntawo',
       photoDataUrl: `https://placehold.co/50x50.png?text=N`,
       assignedRouteId: undefined,
       assignedRouteName: undefined,
@@ -78,8 +78,8 @@ export default function SchoolPortalPage() {
     };
     setStudents(prevStudents => [...prevStudents, newStudent]);
     toast({
-      title: "Mock Student Added",
-      description: `A new student profile for ${newStudent.name} has been added. Please use 'Edit' to update details.`
+      title: "Umunyeshuri Yongewemo (Igipimo)",
+      description: `Umunyeshuri mushya ${newStudent.name} yongewemo. Koresha 'Hindura' kugira ngo ushyiremo amakuru ye.`
     });
   };
 
@@ -98,33 +98,32 @@ export default function SchoolPortalPage() {
     );
     setIsEditStudentDialogOpen(false);
     setEditingStudent(null);
-    toast({ title: "Student Updated", description: `${data.name}'s details have been updated.` });
+    toast({ title: "Umunyeshuri Yahinduwe", description: `Amakuru ya ${data.name} yahinduwe.` });
   };
 
   const handleDeleteStudent = (studentId: string) => {
     const studentToDelete = students.find(student => student.id === studentId);
     if (!studentToDelete) return;
 
-    if (window.confirm(`Are you sure you want to remove ${studentToDelete.name} from ${currentSchool.name}?`)) {
+    if (window.confirm(`Urifuza gukura ${studentToDelete.name} kuri ${currentSchool.name}?`)) {
       setStudents(prevStudents => prevStudents.filter(s => s.id !== studentId));
-      toast({ title: "Student Removed", description: `${studentToDelete.name} has been removed from this list.` });
+      toast({ title: "Umunyeshuri Yakuweho", description: `${studentToDelete.name} yakuwe kuri uru rutonde.` });
     }
   };
 
-  // Route Management Functions
   const handleAddSchoolRoute = () => {
-    const newRouteName = window.prompt("Enter new route name:", "New School Route");
+    const newRouteName = window.prompt("Shyiramo izina ry'urugendo rushya:", "Urugendo Rushya rw'Ishuri");
     if (newRouteName && newRouteName.trim() !== "") {
       const newRoute: BusRoute = {
         id: `sch-route-${Math.random().toString(36).substring(2, 9)}`,
         name: newRouteName.trim(),
         pickupTime: "08:00 AM", 
-        driverName: "To be assigned", 
+        driverName: "Ntawe", 
       };
       setSchoolRoutes(prev => [...prev, newRoute]);
-      toast({ title: "Route Added", description: `Route "${newRoute.name}" added.` });
+      toast({ title: "Urugendo Rwongewemo", description: `Urugendo "${newRoute.name}" rwongewemo.` });
     } else if (newRouteName === "") {
-      toast({ title: "Add Cancelled", description: "Route name cannot be empty.", variant: "destructive" });
+      toast({ title: "Kwonheraho Byahagaritswe", description: "Izina ry'urugendo ntirishobora kuba ubusa.", variant: "destructive" });
     }
   };
 
@@ -132,12 +131,12 @@ export default function SchoolPortalPage() {
     const routeToEdit = schoolRoutes.find(r => r.id === routeId);
     if (!routeToEdit) return;
 
-    const newName = window.prompt("Enter new route name:", routeToEdit.name);
+    const newName = window.prompt("Shyiramo izina rishya ry'urugendo:", routeToEdit.name);
     if (newName && newName.trim() !== "") {
       setSchoolRoutes(prev => prev.map(r => r.id === routeId ? { ...r, name: newName.trim() } : r));
-      toast({ title: "Route Updated", description: `Route name changed to "${newName.trim()}".` });
+      toast({ title: "Urugendo Rwahinduwe", description: `Izina ry'urugendo ryahinduwe "${newName.trim()}".` });
     } else if (newName === "") {
-      toast({ title: "Update Cancelled", description: "Route name cannot be empty.", variant: "destructive" });
+      toast({ title: "Guhindura Byahagaritswe", description: "Izina ry'urugendo ntirishobora kuba ubusa.", variant: "destructive" });
     }
   };
 
@@ -145,16 +144,15 @@ export default function SchoolPortalPage() {
     const routeToDelete = schoolRoutes.find(r => r.id === routeId);
     if (!routeToDelete) return;
 
-    if (window.confirm(`Are you sure you want to delete route "${routeToDelete.name}"?`)) {
+    if (window.confirm(`Urifuza gusiba urugendo "${routeToDelete.name}"?`)) {
       setSchoolRoutes(prev => prev.filter(r => r.id !== routeId));
       setStudents(prevStudents => prevStudents.map(s => 
         s.assignedRouteId === routeId ? { ...s, assignedRouteId: undefined, assignedRouteName: undefined } : s
       ));
-      toast({ title: "Route Deleted", description: `Route "${routeToDelete.name}" deleted.` });
+      toast({ title: "Urugendo Rwasibwe", description: `Urugendo "${routeToDelete.name}" rwasibwe.` });
     }
   };
 
-  // Driver Assignment Function
   const handleAssignDriverToRoute = (routeId: string, newDriverName: string) => {
     const targetRoute = schoolRoutes.find(r => r.id === routeId);
     if (!targetRoute) return;
@@ -174,8 +172,8 @@ export default function SchoolPortalPage() {
     );
 
     toast({
-      title: "Driver Assigned",
-      description: `${newDriverName === "To be assigned" ? "Driver unassigned from" : newDriverName + " assigned to"} route "${targetRoute.name}".`,
+      title: "Umushoferi Yahawe Umwanya",
+      description: `${newDriverName === "Ntawe" ? "Umushoferi yakuwe kuri" : newDriverName + " yahawe umwanya kuri"} rugendo "${targetRoute.name}".`,
     });
   };
 
@@ -189,37 +187,37 @@ export default function SchoolPortalPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center">
-            <SchoolIcon className="mr-3 h-8 w-8" /> {currentSchool.name} Portal
+            <SchoolIcon className="mr-3 h-8 w-8" /> {currentSchool.name} Umuyoboro
           </h1>
-          <p className="text-muted-foreground">Manage students and transportation for your school.</p>
+          <p className="text-muted-foreground">Genzura abanyeshuri n'ingendo z'ishuri ryawe.</p>
         </div>
         <Button onClick={handleAddStudent} className="bg-accent hover:bg-accent/90 text-accent-foreground">
-          <PlusCircle className="mr-2 h-5 w-5" /> Add New Student
+          <PlusCircle className="mr-2 h-5 w-5" /> Ongeramo Umunyeshuri Mushya
         </Button>
       </div>
 
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="font-headline flex items-center">
-            <Users className="mr-2 h-5 w-5 text-primary" /> Student Roster
+            <Users className="mr-2 h-5 w-5 text-primary" /> Urutonde rw'Abanyeshuri
           </CardTitle>
-          <CardDescription>View and manage students enrolled at {currentSchool.name}. Includes assigned bus routes and drivers.</CardDescription>
+          <CardDescription>Reba kandi ucunge abanyeshuri banditse muri {currentSchool.name}. Harimo n'ingendo zabo n'abashoferi.</CardDescription>
         </CardHeader>
         <CardContent>
           {students.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">No students found for {currentSchool.name}.</p>
+            <p className="text-center text-muted-foreground py-8">Nta banyeshuri babonetse muri {currentSchool.name}.</p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[80px]">Photo</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead className="w-[80px] text-center">Age</TableHead>
-                  <TableHead>Class/Grade</TableHead>
-                  <TableHead>Parent Name</TableHead>
-                  <TableHead>Assigned Route</TableHead>
-                  <TableHead>Route Driver</TableHead>
-                  <TableHead className="text-right w-[150px]">Actions</TableHead>
+                  <TableHead className="w-[80px]">Ifoto</TableHead>
+                  <TableHead>Izina</TableHead>
+                  <TableHead className="w-[80px] text-center">Imyaka</TableHead>
+                  <TableHead>Umwaka/Ishami</TableHead>
+                  <TableHead>Izina ry'Umubyeyi</TableHead>
+                  <TableHead>Urugendo Yahawe</TableHead>
+                  <TableHead>Umushoferi w'Urugendo</TableHead>
+                  <TableHead className="text-right w-[150px]">Ibikorwa</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -229,7 +227,7 @@ export default function SchoolPortalPage() {
                     <TableRow key={student.id}>
                       <TableCell>
                         <Avatar>
-                          <AvatarImage src={student.photoDataUrl} alt={student.name} data-ai-hint="child portrait" />
+                          <AvatarImage src={student.photoDataUrl} alt={student.name} data-ai-hint="umwana ifoto" />
                           <AvatarFallback>{student.name.substring(0, 1).toUpperCase()}</AvatarFallback>
                         </Avatar>
                       </TableCell>
@@ -237,13 +235,13 @@ export default function SchoolPortalPage() {
                       <TableCell className="text-center">{student.age}</TableCell>
                       <TableCell>{student.classGrade}</TableCell>
                       <TableCell>{student.parentName || 'N/A'}</TableCell>
-                      <TableCell>{student.assignedRouteName || <span className="text-muted-foreground italic">Not Assigned</span>}</TableCell>
+                      <TableCell>{student.assignedRouteName || <span className="text-muted-foreground italic">Nta rugendo</span>}</TableCell>
                       <TableCell>{route?.driverName || <span className="text-muted-foreground italic">N/A</span>}</TableCell>
                       <TableCell className="text-right space-x-2">
-                        <Button variant="outline" size="icon" onClick={() => openEditStudentDialog(student)} aria-label="Edit student">
+                        <Button variant="outline" size="icon" onClick={() => openEditStudentDialog(student)} aria-label="Hindura umunyeshuri">
                           <Edit3 className="h-4 w-4" />
                         </Button>
-                        <Button variant="destructive" size="icon" onClick={() => handleDeleteStudent(student.id)} aria-label="Delete student">
+                        <Button variant="destructive" size="icon" onClick={() => handleDeleteStudent(student.id)} aria-label="Siba umunyeshuri">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </TableCell>
@@ -261,9 +259,9 @@ export default function SchoolPortalPage() {
           <DialogContent className="sm:max-w-[480px]">
             <DialogHeader>
               <DialogTitle className="font-headline flex items-center">
-                <Edit3 className="mr-2 h-5 w-5 text-primary" /> Edit Student Details
+                <Edit3 className="mr-2 h-5 w-5 text-primary" /> Hindura Amakuru y'Umunyeshuri
               </DialogTitle>
-              <DialogDescription>Update the details for {editingStudent.name}.</DialogDescription>
+              <DialogDescription>Hindura amakuru ya {editingStudent.name}.</DialogDescription>
             </DialogHeader>
             <div className="py-4">
               <EditStudentForm 
@@ -282,36 +280,36 @@ export default function SchoolPortalPage() {
       <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
          <Card className="shadow-md">
             <CardHeader>
-                <CardTitle className="font-headline text-lg">Route Management</CardTitle>
-                <CardDescription>Oversee bus routes specific to {currentSchool.name}.</CardDescription>
+                <CardTitle className="font-headline text-lg">Icunga ry'Ingendo</CardTitle>
+                <CardDescription>Genzura ingendo z'imodoka zihariye za {currentSchool.name}.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Button variant="outline" onClick={() => setIsRouteManagementDialogOpen(true)}>
-                  <RouteIcon className="mr-2 h-4 w-4"/> Manage School Routes
+                  <RouteIcon className="mr-2 h-4 w-4"/> Genzura Ingendo z'Ishuri
                 </Button>
             </CardContent>
          </Card>
          <Card className="shadow-md">
             <CardHeader>
-                <CardTitle className="font-headline text-lg">Driver Assignment</CardTitle>
-                <CardDescription>Assign available drivers to school bus routes.</CardDescription>
+                <CardTitle className="font-headline text-lg">Guha Abashoferi Imyanya</CardTitle>
+                <CardDescription>Ha abashoferi bariho imyanya ku ngendo z'imodoka z'ishuri.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Button variant="outline" onClick={() => setIsAssignDriverDialogOpen(true)}>
-                  <UserCheck className="mr-2 h-4 w-4" /> Assign Drivers
+                  <UserCheck className="mr-2 h-4 w-4" /> Ha Abashoferi Imyanya
                 </Button>
             </CardContent>
          </Card>
          <Card className="shadow-md">
             <CardHeader>
                 <CardTitle className="font-headline text-lg flex items-center">
-                    <BookOpenCheck className="mr-2 h-5 w-5 text-primary" /> Attendance Records
+                    <BookOpenCheck className="mr-2 h-5 w-5 text-primary" /> Amakuru y'Ukwitabira
                 </CardTitle>
-                <CardDescription>View student attendance logs for {currentSchool.name}.</CardDescription>
+                <CardDescription>Reba amakuru y'ukwitabira kw'abanyeshuri ba {currentSchool.name}.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Button variant="outline" onClick={handleViewAttendance}>
-                  View Attendance
+                  Reba Ukwitabira
                 </Button>
             </CardContent>
          </Card>
@@ -321,27 +319,27 @@ export default function SchoolPortalPage() {
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle className="font-headline flex items-center">
-              <RouteIcon className="mr-2 h-5 w-5 text-primary"/> Route Management for {currentSchool.name}
+              <RouteIcon className="mr-2 h-5 w-5 text-primary"/> Icunga ry'Ingendo rya {currentSchool.name}
             </DialogTitle>
             <DialogDescription>
-              View, add, edit, or delete bus routes for your school. Drivers assigned here will reflect in the student roster.
+              Reba, ongeramo, hindura, cyangwa siba ingendo z'imodoka z'ishuri ryawe. Abashoferi bahawe imyanya hano bazagaragara ku rutonde rw'abanyeshuri.
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh] p-1">
             <div className="py-4 space-y-4">
               <Button onClick={handleAddSchoolRoute} className="bg-accent hover:bg-accent/90 text-accent-foreground mb-4">
-                <PlusCircle className="mr-2 h-4 w-4" /> Add New Route
+                <PlusCircle className="mr-2 h-4 w-4" /> Ongeramo Urugendo Rushya
               </Button>
               {schoolRoutes.length === 0 ? (
-                <p className="text-muted-foreground text-center py-4">No routes configured for {currentSchool.name} yet.</p>
+                <p className="text-muted-foreground text-center py-4">Nta ngendo zirashyirwamo kuri {currentSchool.name} kugeza ubu.</p>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Route Name</TableHead>
-                      <TableHead>Pickup Time</TableHead>
-                      <TableHead>Driver Name</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
+                      <TableHead>Izina ry'Urugendo</TableHead>
+                      <TableHead>Isaha yo Gufata</TableHead>
+                      <TableHead>Izina ry'Umushoferi</TableHead>
+                      <TableHead className="text-right">Ibikorwa</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -351,10 +349,10 @@ export default function SchoolPortalPage() {
                         <TableCell>{route.pickupTime}</TableCell>
                         <TableCell>{route.driverName}</TableCell>
                         <TableCell className="text-right space-x-2">
-                          <Button variant="outline" size="icon" onClick={() => handleEditSchoolRoute(route.id)} aria-label="Edit route name">
+                          <Button variant="outline" size="icon" onClick={() => handleEditSchoolRoute(route.id)} aria-label="Hindura izina ry'urugendo">
                             <Edit3 className="h-4 w-4" />
                           </Button>
-                          <Button variant="destructive" size="icon" onClick={() => handleDeleteSchoolRoute(route.id)} aria-label="Delete route">
+                          <Button variant="destructive" size="icon" onClick={() => handleDeleteSchoolRoute(route.id)} aria-label="Siba urugendo">
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </TableCell>
@@ -366,7 +364,7 @@ export default function SchoolPortalPage() {
             </div>
           </ScrollArea>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsRouteManagementDialogOpen(false)}>Close</Button>
+            <Button variant="outline" onClick={() => setIsRouteManagementDialogOpen(false)}>Funga</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -375,35 +373,35 @@ export default function SchoolPortalPage() {
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-headline flex items-center">
-              <UserCheck className="mr-2 h-5 w-5 text-primary"/> Assign Drivers to Routes
+              <UserCheck className="mr-2 h-5 w-5 text-primary"/> Guha Abashoferi Imyanya ku Ngendo
             </DialogTitle>
             <DialogDescription>
-              Select a driver for each school route from the list of available drivers.
+              Hitamo umushoferi kuri buri rugendo rw'ishuri mu bashoferi bahari.
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh] p-1 mt-4">
             <div className="space-y-4">
               {schoolRoutes.length === 0 ? (
-                <p className="text-muted-foreground text-center py-4">No routes available. Please add routes first.</p>
+                <p className="text-muted-foreground text-center py-4">Nta ngendo zihari. Nyamuneka ongeramo ingendo mbere.</p>
               ) : (
                 schoolRoutes.map((route) => (
                   <div key={route.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 border rounded-md hover:bg-muted/50 transition-colors">
                     <div className="mb-2 sm:mb-0">
                       <p className="font-medium text-foreground">{route.name}</p>
-                      <p className="text-xs text-muted-foreground">Pickup: {route.pickupTime}</p>
+                      <p className="text-xs text-muted-foreground">Isaha yo Gufata: {route.pickupTime}</p>
                     </div>
                     <Select
-                      value={route.driverName === "To be assigned" ? undefined : route.driverName}
+                      value={route.driverName === "Ntawe" ? undefined : route.driverName}
                       onValueChange={(newDriverName) => {
-                        handleAssignDriverToRoute(route.id, newDriverName || "To be assigned");
+                        handleAssignDriverToRoute(route.id, newDriverName || "Ntawe");
                       }}
                     >
                       <SelectTrigger className="w-full sm:w-[200px]">
-                        <SelectValue placeholder="Select driver" />
+                        <SelectValue placeholder="Hitamo umushoferi" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="To be assigned">
-                          <span className="italic text-muted-foreground">To be assigned</span>
+                        <SelectItem value="Ntawe">
+                          <span className="italic text-muted-foreground">Ntawe</span>
                         </SelectItem>
                         {mockDrivers.map((driver) => (
                           <SelectItem key={driver.id} value={driver.name}>
@@ -418,7 +416,7 @@ export default function SchoolPortalPage() {
             </div>
           </ScrollArea>
           <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={() => setIsAssignDriverDialogOpen(false)}>Close</Button>
+            <Button variant="outline" onClick={() => setIsAssignDriverDialogOpen(false)}>Funga</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -427,23 +425,23 @@ export default function SchoolPortalPage() {
         <DialogContent className="sm:max-w-2xl md:max-w-3xl">
           <DialogHeader>
             <DialogTitle className="font-headline flex items-center">
-              <BookOpenCheck className="mr-2 h-6 w-6 text-primary" /> Student Attendance Records for {currentSchool.name}
+              <BookOpenCheck className="mr-2 h-6 w-6 text-primary" /> Amakuru y'Ukwitabira kw'Abanyeshuri ba {currentSchool.name}
             </DialogTitle>
             <DialogDescription>
-              This is a mock view of student attendance. For live tracking, please refer to the Driver Dashboard.
+              Aha ni amakuru y'ukwitabira (y'igipimo). Kubona uko bihagaze ako kanya, reba Imbonerahamwe y'Umushoferi.
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh] p-1 mt-4">
              {students.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">No student data available for attendance.</p>
+                <p className="text-muted-foreground text-center py-8">Nta makuru y'abanyeshuri ahari yo kwerekana ukwitabira.</p>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Student Name</TableHead>
-                      <TableHead>Class/Grade</TableHead>
-                      <TableHead>Last Status</TableHead>
-                      <TableHead>Last Updated</TableHead>
+                      <TableHead>Izina ry'Umunyeshuri</TableHead>
+                      <TableHead>Umwaka/Ishami</TableHead>
+                      <TableHead>Uko Byari Biheruka</TableHead>
+                      <TableHead>Igihe Biherukira</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -465,7 +463,7 @@ export default function SchoolPortalPage() {
                               'border-yellow-500 text-yellow-600'
                             }
                           >
-                            {student.lastAttendanceStatus || 'N/A'}
+                            {student.lastAttendanceStatus === 'Picked Up' ? 'Yafashwe' : student.lastAttendanceStatus === 'Dropped Off' ? 'Yagejejwe' : student.lastAttendanceStatus === 'Absent' ? 'Ntiyaje' : 'Ategereje' || 'N/A'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
@@ -478,7 +476,7 @@ export default function SchoolPortalPage() {
               )}
           </ScrollArea>
           <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={() => setIsAttendanceDialogOpen(false)}>Close</Button>
+            <Button variant="outline" onClick={() => setIsAttendanceDialogOpen(false)}>Funga</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -486,4 +484,3 @@ export default function SchoolPortalPage() {
     </div>
   );
 }
-    

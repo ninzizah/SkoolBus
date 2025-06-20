@@ -11,9 +11,9 @@ import AddSchoolForm from '@/components/admin/schools/add-school-form';
 import { useToast } from '@/hooks/use-toast';
 
 const initialMockSchools: School[] = [
-  { id: 'sch1', name: 'Wonderland Elementary', address: '123 Fantasy Lane, Storyville, ST 12345', contactPhone: '(250)-0101', contactEmail: 'contact@wonderland.edu' },
-  { id: 'sch2', name: 'Construction Academy', address: '456 Builder Ave, Tooltown, TT 67890', contactPhone: '(250)-0102', contactEmail: 'info@constructionacad.org' },
-  { id: 'sch3', name: 'Oakwood High', address: '789 Knowledge Rd, Learnsville, LV 13579', contactPhone: '(250)-0103', contactEmail: 'admin@oakwoodhigh.com' },
+  { id: 'sch1', name: 'Groupe Scolaire Kacyiru', address: 'KG 548 St, Kacyiru, Kigali', contactPhone: '(+250) 788 XXX XXX', contactEmail: 'contact@gskacyiru.ac.rw' },
+  { id: 'sch2', name: 'Lycee de Kigali', address: 'KN 29 St, Nyarugenge, Kigali', contactPhone: '(+250) 789 YYY YYY', contactEmail: 'info@lyceedekigali.sc.rw' },
+  { id: 'sch3', name: 'Green Hills Academy', address: 'KG 278 St, Nyarutarama, Kigali', contactPhone: '(+250) 787 ZZZ ZZZ', contactEmail: 'admin@greenhillsacademy.rw' },
 ];
 
 export default function SchoolManagementPage() {
@@ -28,16 +28,16 @@ export default function SchoolManagementPage() {
     const schoolToEdit = schools.find(school => school.id === id);
     if (!schoolToEdit) return;
 
-    const newName = window.prompt("Enter new school name:", schoolToEdit.name);
+    const newName = window.prompt("Shyiramo izina rishya ry'ishuri:", schoolToEdit.name);
     if (newName && newName.trim() !== "") {
       setSchools(prevSchools =>
         prevSchools.map(school =>
           school.id === id ? { ...school, name: newName.trim() } : school
         )
       );
-      toast({ title: "School Updated", description: `School name changed to ${newName.trim()}.` });
+      toast({ title: "Ishuri Ryahinduwe", description: `Izina ry'ishuri ryahinduwe ${newName.trim()}.` });
     } else if (newName === "") {
-      toast({ title: "Update Cancelled", description: "School name cannot be empty.", variant: "destructive" });
+      toast({ title: "Igikorwa Cyahagaritswe", description: "Izina ry'ishuri ntirishobora kuba ubusa.", variant: "destructive" });
     }
   };
 
@@ -45,9 +45,9 @@ export default function SchoolManagementPage() {
     const schoolToDelete = schools.find(school => school.id === id);
     if (!schoolToDelete) return;
 
-    if (window.confirm(`Are you sure you want to delete ${schoolToDelete.name}?`)) {
+    if (window.confirm(`Urifuza gusiba ${schoolToDelete.name}?`)) {
       setSchools(prevSchools => prevSchools.filter(school => school.id !== id));
-      toast({ title: "School Deleted", description: `${schoolToDelete.name} has been deleted.` });
+      toast({ title: "Ishuri Ryasibwe", description: `${schoolToDelete.name} ryasibwe.` });
     }
   };
 
@@ -56,9 +56,9 @@ export default function SchoolManagementPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold font-headline text-primary flex items-center">
-            <Building className="mr-3 h-8 w-8" /> School Management
+            <Building className="mr-3 h-8 w-8" /> Icunga Mashuri
           </h1>
-          <p className="text-muted-foreground">Oversee school profiles, settings, and transportation details.</p>
+          <p className="text-muted-foreground">Genzura amashuri, ibipimo, n'amakuru ajyanye n'ingendo.</p>
         </div>
       </div>
 
@@ -66,18 +66,18 @@ export default function SchoolManagementPage() {
         <div>
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle className="font-headline">Registered Schools</CardTitle>
-              <CardDescription>Browse and manage all schools in the system.</CardDescription>
+              <CardTitle className="font-headline">Amashuri Yanditswe</CardTitle>
+              <CardDescription>Reba kandi ucunge amashuri yose ari muri sisitemu.</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>School Name</TableHead>
-                    <TableHead>Address</TableHead>
-                    <TableHead>Contact Phone</TableHead>
-                    <TableHead>Contact Email</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>Izina ry'Ishuri</TableHead>
+                    <TableHead>Aderesi</TableHead>
+                    <TableHead>Telefoni</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead className="text-right">Ibikorwa</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -88,10 +88,10 @@ export default function SchoolManagementPage() {
                       <TableCell>{school.contactPhone}</TableCell>
                       <TableCell>{school.contactEmail}</TableCell>
                       <TableCell className="text-right space-x-2">
-                        <Button variant="outline" size="icon" onClick={() => handleEditSchool(school.id)} aria-label="Edit school">
+                        <Button variant="outline" size="icon" onClick={() => handleEditSchool(school.id)} aria-label="Hindura Ishuri">
                           <Edit3 className="h-4 w-4" />
                         </Button>
-                        <Button variant="destructive" size="icon" onClick={() => handleDeleteSchool(school.id)} aria-label="Delete school">
+                        <Button variant="destructive" size="icon" onClick={() => handleDeleteSchool(school.id)} aria-label="Siba Ishuri">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </TableCell>
@@ -100,7 +100,7 @@ export default function SchoolManagementPage() {
                 </TableBody>
               </Table>
               {schools.length === 0 && (
-                <p className="text-center text-muted-foreground py-8">No schools added yet.</p>
+                <p className="text-center text-muted-foreground py-8">Nta mashuri arongerwamo.</p>
               )}
             </CardContent>
           </Card>
@@ -110,9 +110,9 @@ export default function SchoolManagementPage() {
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="font-headline flex items-center">
-                <PlusCircle className="mr-2 h-5 w-5 text-accent" /> Add New School
+                <PlusCircle className="mr-2 h-5 w-5 text-accent" /> Ongeramo Ishuri Rishya
               </CardTitle>
-              <CardDescription>Register a new school profile.</CardDescription>
+              <CardDescription>Andikisha ishuri rishya.</CardDescription>
             </CardHeader>
             <CardContent>
               <AddSchoolForm onSchoolAdded={handleAddSchool} />

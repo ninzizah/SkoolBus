@@ -3,21 +3,15 @@
 
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-// zodResolver is no longer needed as the schema has been removed
-// import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { getOptimizedRoute } from '@/app/route-optimization/actions';
-// routeOptimizationSchema and RouteOptimizationFormData have been removed from @/types
-// import type { RouteOptimizationFormData } from '@/types';
-// import { routeOptimizationSchema } from '@/types';
 import type { SmartRouteOptimizationOutput } from "@/ai/flows/smart-route-optimization";
 import { Loader2, Zap, MapPinned, CalendarClock, MessageSquareQuote } from 'lucide-react';
 
-// Local type for form data now that shared type is removed
 interface RouteOptimizationFormValues {
   currentRoute: string;
   trafficData: string;
@@ -30,7 +24,6 @@ export default function RouteOptimizationClient() {
   const { toast } = useToast();
 
   const form = useForm<RouteOptimizationFormValues>({
-    // resolver: zodResolver(routeOptimizationSchema), // Resolver removed
     defaultValues: {
       currentRoute: '',
       trafficData: '',
@@ -41,29 +34,26 @@ export default function RouteOptimizationClient() {
   async function onSubmit(data: RouteOptimizationFormValues) {
     setIsLoading(true);
     setOptimizationResult(null);
-    // form.clearErrors(); // Not strictly necessary without a resolver
 
     try {
-      const result = await getOptimizedRoute(data); // data is compatible with 'any' in the action
+      const result = await getOptimizedRoute(data); 
       if (result.success && result.data) {
-        // This block is unlikely to be hit as result.data will be undefined from the modified action
         setOptimizationResult(result.data);
         toast({
-          title: 'Optimization Successful',
-          description: 'AI has generated route suggestions.',
+          title: 'Kunoza Byagenze Neza',
+          description: 'AI yatanze ibyifuzo by\'urugendo.',
         });
       } else {
-        // Field errors from the action are not expected anymore
         toast({
-          title: 'Optimization Status',
-          description: result.error || 'The Smart Route Optimization feature is currently disabled.',
+          title: 'Uko Kunoza Bihagaze',
+          description: result.error || 'Serivisi yo kunoza ingendo ikoresheje AI ntabwo ikora muri iki gihe.',
           variant: result.success ? 'default' : 'destructive',
         });
       }
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'An unexpected error occurred while submitting the form.',
+        title: 'Ikibazo',
+        description: 'Habayeho ikibazo kitateganijwe mu kohereza fomu.',
         variant: 'destructive',
       });
     } finally {
@@ -75,9 +65,9 @@ export default function RouteOptimizationClient() {
     <div className="space-y-8">
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Route Optimization Input</CardTitle>
+          <CardTitle className="font-headline text-2xl">Amakuru yo Kunoza Urugendo</CardTitle>
           <CardDescription>
-            Provide details about the current route, traffic conditions, and schedule for AI analysis.
+            Tanga amakuru arambuye ku rugendo rusanzwe, uko imihanda ihagaze, na gahunda kugira ngo AI ibisesengure.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -88,10 +78,10 @@ export default function RouteOptimizationClient() {
                 name="currentRoute"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Current Route Description</FormLabel>
+                    <FormLabel>Ubusobanuro bw'Urugendo Rusanzwe</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="e.g., Starts at Main St depot, proceeds via Elm St, Oak Ave, to Northwood High. Returns via Pine St."
+                        placeholder="Urugero: Itangirira ku cyicaro cya Gikondo, ikanyura kuri KG 123 St, KK 456 Ave, kugera kuri Lycee de Kigali. Isubira inyuma inyuze kuri KN 789 St."
                         className="min-h-[100px]"
                         {...field}
                       />
@@ -105,10 +95,10 @@ export default function RouteOptimizationClient() {
                 name="trafficData"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Real-Time Traffic Data / Observations</FormLabel>
+                    <FormLabel>Amakuru y'Imihanda Ako Kanya / Ibyagaragaye</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="e.g., Heavy congestion on Elm St due to construction. Accident reported on Oak Ave. Pine St clear."
+                        placeholder="Urugero: Umuhanda wa KG 123 St urimo abantu benshi kubera imirimo. Impanuka yamenyekanye kuri KK 456 Ave. KN 789 St irakora neza."
                         className="min-h-[100px]"
                         {...field}
                       />
@@ -122,10 +112,10 @@ export default function RouteOptimizationClient() {
                 name="currentSchedule"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Current Bus Schedule</FormLabel>
+                    <FormLabel>Gahunda y'Imodoka Isanzwe</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="e.g., Depart Depot: 7:00 AM, Stop 1 (Elm St): 7:15 AM, Stop 2 (Oak Ave): 7:30 AM, Arrive School: 7:50 AM."
+                        placeholder="Urugero: Guhaguruka ku Cyicaro: 7:00 AM, Guhagarara 1 (KG 123 St): 7:15 AM, Guhagarara 2 (KK 456 Ave): 7:30 AM, Kugera ku Ishuri: 7:50 AM."
                         className="min-h-[100px]"
                         {...field}
                       />
@@ -138,11 +128,11 @@ export default function RouteOptimizationClient() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing... 
+                    Birimo Gutunganywa... 
                   </>
                 ) : (
                   <>
-                    <Zap className="mr-2 h-4 w-4" /> Get Route Suggestion
+                    <Zap className="mr-2 h-4 w-4" /> Bona Icyifuzo cy'Urugendo
                   </>
                 )}
               </Button>
@@ -151,26 +141,25 @@ export default function RouteOptimizationClient() {
         </CardContent>
       </Card>
 
-      {/* This section will likely not render as optimizationResult will remain null */}
       {optimizationResult && (
         <Card className="shadow-xl animate-fadeIn">
           <CardHeader>
-            <CardTitle className="font-headline text-2xl text-primary">AI Optimization Suggestions</CardTitle>
+            <CardTitle className="font-headline text-2xl text-primary">Ibyifuzo bya AI byo Kunoza</CardTitle>
             <CardDescription>
-              Review the AI-generated recommendations for your route.
+              Reba ibyifuzo byatanzwe na AI ku rugendo rwawe.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold flex items-center mb-2"><MapPinned className="mr-2 h-5 w-5 text-accent" />Optimized Route</h3>
+              <h3 className="text-lg font-semibold flex items-center mb-2"><MapPinned className="mr-2 h-5 w-5 text-accent" />Urugendo Runoze</h3>
               <p className="text-foreground/90 bg-muted p-3 rounded-md whitespace-pre-wrap">{optimizationResult.optimizedRoute}</p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold flex items-center mb-2"><CalendarClock className="mr-2 h-5 w-5 text-accent" />Schedule Adjustments</h3>
+              <h3 className="text-lg font-semibold flex items-center mb-2"><CalendarClock className="mr-2 h-5 w-5 text-accent" />Impinduka kuri Gahunda</h3>
               <p className="text-foreground/90 bg-muted p-3 rounded-md whitespace-pre-wrap">{optimizationResult.scheduleAdjustments}</p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold flex items-center mb-2"><MessageSquareQuote className="mr-2 h-5 w-5 text-accent" />Delay Explanation & Benefits</h3>
+              <h3 className="text-lg font-semibold flex items-center mb-2"><MessageSquareQuote className="mr-2 h-5 w-5 text-accent" />Ubusobanuro bw'Igihe Cyatakaye & Akamaro</h3>
               <p className="text-foreground/90 bg-muted p-3 rounded-md whitespace-pre-wrap">{optimizationResult.delayExplanation}</p>
             </div>
           </CardContent>

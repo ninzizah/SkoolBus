@@ -34,7 +34,7 @@ async function addSchoolAction(data: SchoolFormData): Promise<{ success: boolean
     return { success: false, message: "Failed to add school due to a server error." };
   }
   const schoolId = `sch-${Math.random().toString(36).substring(2, 9)}`;
-  return { success: true, message: `School ${data.name} added successfully!`, schoolId };
+  return { success: true, message: `Ishuri ${data.name} ryongewemo neza!`, schoolId };
 }
 
 
@@ -58,22 +58,22 @@ export default function AddSchoolForm({ onSchoolAdded }: AddSchoolFormProps) {
       const result = await addSchoolAction(data);
       if (result.success && result.schoolId) {
         toast({
-          title: "Success",
+          title: "Byakunze",
           description: result.message,
         });
         onSchoolAdded({ ...data, id: result.schoolId });
         form.reset();
       } else {
         toast({
-          title: "Error",
-          description: result.message || "An unknown error occurred.",
+          title: "Byanze",
+          description: result.message || "Habayeho ikibazo kitazwi.",
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: "Byanze",
+        description: "Habayeho ikibazo kitateganijwe. Nyamuneka gerageza futhi.",
         variant: "destructive",
       });
     } finally {
@@ -89,9 +89,9 @@ export default function AddSchoolForm({ onSchoolAdded }: AddSchoolFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>School Name</FormLabel>
+              <FormLabel>Izina ry'Ishuri</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Northwood High" {...field} />
+                <Input placeholder="Urugero: Groupe Scolaire Remera" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -102,9 +102,9 @@ export default function AddSchoolForm({ onSchoolAdded }: AddSchoolFormProps) {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address</FormLabel>
+              <FormLabel>Aderesi</FormLabel>
               <FormControl>
-                <Textarea placeholder="e.g., 123 Education Drive, City, State ZIP" {...field} />
+                <Textarea placeholder="Urugero: KG 123 St, Remera, Kigali" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -115,9 +115,9 @@ export default function AddSchoolForm({ onSchoolAdded }: AddSchoolFormProps) {
           name="contactPhone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contact Phone</FormLabel>
+              <FormLabel>Telefoni yo Guhamagara</FormLabel>
               <FormControl>
-                <Input type="tel" placeholder="e.g., (250) 123-4567" {...field} />
+                <Input type="tel" placeholder="Urugero: (+250) 7XX XXX XXX" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -128,9 +128,9 @@ export default function AddSchoolForm({ onSchoolAdded }: AddSchoolFormProps) {
           name="contactEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contact Email</FormLabel>
+              <FormLabel>Email yo Guhamagara</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="e.g., admin@school.edu" {...field} />
+                <Input type="email" placeholder="Urugero: admin@ishuri.rw" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -140,10 +140,10 @@ export default function AddSchoolForm({ onSchoolAdded }: AddSchoolFormProps) {
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Adding School...
+              Birimo Kongerwamo...
             </>
           ) : (
-            "Add School"
+            "Ongeramo Ishuri"
           )}
         </Button>
       </form>

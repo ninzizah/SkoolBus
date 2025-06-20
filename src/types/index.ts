@@ -3,13 +3,13 @@ import { z } from 'zod';
 
 // Parent Schemas and Types
 export const parentFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
-  email: z.string().email("Invalid email address."),
+  name: z.string().min(2, "Izina rigomba kuba nibura inyuguti 2."),
+  email: z.string().email("Email ntiyemewe."),
   phoneNumber: z.string()
-    .min(10, "Phone number must be at least 10 digits.")
-    .regex(/^\+?[0-9\s-()xX.]*$/, "Invalid phone number format. Allows digits, spaces, hyphens, parentheses, dots, and 'x' for extensions.")
+    .min(10, "Nimero ya telefoni igomba kuba nibura imibare 10.")
+    .regex(/^\+?[0-9\s-()xX.]*$/, "Imiterere ya nimero ya telefoni ntiyemewe. Yemera imibare, umwanya, utumenyetso nka -, (), ., na 'x' ku kwagura nimero.")
     .optional(),
-  address: z.string().min(5, "Address must be at least 5 characters.").optional(),
+  address: z.string().min(5, "Aderesi igomba kuba nibura inyuguti 5.").optional(),
 });
 export type ParentFormData = z.infer<typeof parentFormSchema>;
 
@@ -20,12 +20,12 @@ export interface Parent extends ParentFormData {
 
 // Child Schemas and Types
 export const childFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
-  age: z.coerce.number().int().positive("Age must be a positive number.").min(1, "Age must be at least 1."),
-  classGrade: z.string().min(1, "Class/Grade is required."),
-  photoDataUrl: z.string().optional().describe("A data URI of the child's photo. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
-  parentId: z.string().min(1, "Parent selection is required."),
-  schoolId: z.string().min(1, "School selection is required."),
+  name: z.string().min(2, "Izina rigomba kuba nibura inyuguti 2."),
+  age: z.coerce.number().int().positive("Imyaka igomba kuba umubare usumba zeru.").min(1, "Imyaka igomba kuba nibura 1."),
+  classGrade: z.string().min(1, "Umwaka/Ishami birakenewe."),
+  photoDataUrl: z.string().optional().describe("Data URI y'ifoto y'umwana. Imiterere iteganyijwe: 'data:<mimetype>;base64,<encoded_data>'."),
+  parentId: z.string().min(1, "Guhitamo umubyeyi birakenewe."), // Changed from UUID
+  schoolId: z.string().min(1, "Guhitamo ishuri birakenewe."),
   assignedRouteId: z.string().optional(),
 });
 export type ChildFormData = z.infer<typeof childFormSchema>;
@@ -55,23 +55,21 @@ export interface BusRoute {
 }
 
 // Driver Dashboard Types
-// ChildAttendanceStatus is already defined above for Child interface
-
 export interface ChildAttendance {
   id: string; // Child's ID
   name: string;
   status: ChildAttendanceStatus;
 }
 export interface RouteStop {
-  id: string; // Stop ID, can be more generic like string
-  name: string; // e.g., "123 Main St" or "Oakwood Elementary"
+  id: string; 
+  name: string; // e.g., "KG 123 St" or "Lycee de Kigali"
   time: string; // e.g., "07:15 AM"
-  children: ChildAttendance[]; // List of children expected at this stop
+  children: ChildAttendance[]; 
 }
 
 export interface AssignedRoute {
-  id: string; // Route ID
-  routeName: string; // e.g., "Route A - Morning"
+  id: string; 
+  routeName: string; // e.g., "Urugendo A - Mu Gitondo"
   driverName: string;
   busNumber: string;
   stops: RouteStop[];
@@ -79,12 +77,12 @@ export interface AssignedRoute {
 
 // Admin - School Management Schemas and Types
 export const schoolFormSchema = z.object({
-  name: z.string().min(3, "School name must be at least 3 characters."),
-  address: z.string().min(5, "Address must be at least 5 characters."),
+  name: z.string().min(3, "Izina ry'ishuri rigomba kuba nibura inyuguti 3."),
+  address: z.string().min(5, "Aderesi igomba kuba nibura inyuguti 5."),
   contactPhone: z.string()
-    .min(10, "Phone number must be at least 10 digits.")
-    .regex(/^\+?[0-9\s-()xX.]*$/, "Invalid phone number format. Allows digits, spaces, hyphens, parentheses, dots, and 'x' for extensions."),
-  contactEmail: z.string().email("Invalid email address."),
+    .min(10, "Telefoni igomba kuba nibura imibare 10.")
+    .regex(/^\+?[0-9\s-()xX.]*$/, "Imiterere ya nimero ya telefoni ntiyemewe."),
+  contactEmail: z.string().email("Email ntiyemewe."),
 });
 export type SchoolFormData = z.infer<typeof schoolFormSchema>;
 
@@ -94,19 +92,18 @@ export interface School extends SchoolFormData {
 
 // Sign Up Schemas and Types
 export const signupFormSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters."),
-  email: z.string().email("Invalid email address."),
-  password: z.string().min(8, "Password must be at least 8 characters."),
+  fullName: z.string().min(2, "Amazina yuzuye agomba kuba nibura inyuguti 2."),
+  email: z.string().email("Email ntiyemewe."),
+  password: z.string().min(8, "Ijambobanga rigomba kuba nibura inyuguti 8."),
   role: z.enum(["parent", "school_representative", "driver"], {
-    required_error: "You must select a role.",
+    required_error: "Ugomba guhitamo uruhare rwawe.",
   }),
 });
 export type SignupFormData = z.infer<typeof signupFormSchema>;
 
 // Login Schemas and Types
 export const loginFormSchema = z.object({
-  email: z.string().email("Invalid email address."),
-  password: z.string().min(1, "Password is required."), // Min 1, actual length check is done by server
+  email: z.string().email("Email ntiyemewe."),
+  password: z.string().min(1, "Ijambobanga rirakenewe."), 
 });
 export type LoginFormData = z.infer<typeof loginFormSchema>;
-

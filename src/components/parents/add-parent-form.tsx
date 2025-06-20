@@ -33,7 +33,7 @@ async function addParentAction(data: ParentFormData): Promise<{ success: boolean
   if (data.name.toLowerCase() === "error") {
     return { success: false, message: "Failed to add parent due to a server error." };
   }
-  return { success: true, message: `Parent ${data.name} added successfully!` };
+  return { success: true, message: `Umubyeyi ${data.name} yongewemo neza!` };
 }
 
 
@@ -54,25 +54,25 @@ export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
   async function onSubmit(data: ParentFormData) {
     setIsSubmitting(true);
     try {
-      const result = await addParentAction(data); // Call server action
+      const result = await addParentAction(data); 
       if (result.success) {
         toast({
-          title: "Success",
+          title: "Byakunze",
           description: result.message,
         });
-        onParentAdded(data); // Call the callback prop
+        onParentAdded(data); 
         form.reset();
       } else {
         toast({
-          title: "Error",
+          title: "Byanze",
           description: result.message,
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: "Byanze",
+        description: "Habayeho ikibazo kitateganijwe. Nyamuneka gerageza futhi.",
         variant: "destructive",
       });
     } finally {
@@ -88,9 +88,9 @@ export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full Name</FormLabel>
+              <FormLabel>Amazina Yuzuye</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., shema honore" {...field} />
+                <Input placeholder="Urugero: Shema Honore" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -101,9 +101,9 @@ export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email Address</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="e.g., shema.honore@example.com" {...field} />
+                <Input type="email" placeholder="Urugero: shema.honore@example.rw" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -114,9 +114,9 @@ export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
           name="phoneNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number (Optional)</FormLabel>
+              <FormLabel>Nimero ya Telefoni (Si ngombwa)</FormLabel>
               <FormControl>
-                <Input type="tel" placeholder="e.g., (250) 123-4567" {...field} />
+                <Input type="tel" placeholder="Urugero: (+250) 7XX XXX XXX" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -127,9 +127,9 @@ export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address (Optional)</FormLabel>
+              <FormLabel>Aderesi (Si ngombwa)</FormLabel>
               <FormControl>
-                <Textarea placeholder="e.g., KG 17 Ave, Kigali" {...field} />
+                <Textarea placeholder="Urugero: KG 17 Ave, Kigali" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -139,10 +139,10 @@ export default function AddParentForm({ onParentAdded }: AddParentFormProps) {
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Adding...
+              Birimo kongerwamo...
             </>
           ) : (
-            "Add Parent Account"
+            "Ongeramo Konti y'Umubyeyi"
           )}
         </Button>
       </form>
