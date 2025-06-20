@@ -20,8 +20,8 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
 const navItems = [
-  { href: '/parents', label: 'Parents', icon: Users }, // Changed 'Ababyeyi' to 'Parents'
-  { href: '/children', label: 'Abana', icon: Smile },
+  { href: '/parents', label: 'Parents', icon: Users },
+  { href: '/children', label: 'Children', icon: Smile }, // Changed 'Abana' back to 'Children'
   { href: '/tracking', label: 'Gukurikirana', icon: MapPin },
   { href: '/driver', label: 'Umushoferi', icon: Gauge },
   { href: '/school', label: 'Ishuri (Portal)', icon: SchoolIcon },
