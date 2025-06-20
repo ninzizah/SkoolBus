@@ -78,48 +78,83 @@ export default function LoginPage() {
   const handleForgotPasswordClick = () => {
     const firstEmail = window.prompt("Please enter your email address to reset your password:");
 
-    if (firstEmail === null) { // User cancelled the first prompt
-      toast({
-        title: "Password Reset Cancelled",
-        description: "Password reset request was cancelled.",
-      });
+    if (firstEmail === null) {
+      toast({ title: "Password Reset Cancelled", description: "Password reset request was cancelled." });
       return;
     }
-
-    if (firstEmail.trim() === "") { // User left first prompt empty
-      toast({
-        title: "Password Reset Failed",
-        description: "Email address cannot be empty.",
-        variant: "destructive",
-      });
+    if (firstEmail.trim() === "") {
+      toast({ title: "Password Reset Failed", description: "Email address cannot be empty.", variant: "destructive" });
       return;
     }
 
     const secondEmail = window.prompt("Please re-enter your email address for confirmation:");
 
-    if (secondEmail === null) { // User cancelled the second prompt
-      toast({
-        title: "Password Reset Cancelled",
-        description: "Email confirmation process was cancelled.",
-      });
+    if (secondEmail === null) {
+      toast({ title: "Password Reset Cancelled", description: "Email confirmation process was cancelled." });
       return;
     }
-
-    if (secondEmail.trim() === "") { // User left second prompt empty
-      toast({
-        title: "Password Reset Failed",
-        description: "Confirmation email cannot be empty.",
-        variant: "destructive",
-      });
+    if (secondEmail.trim() === "") {
+      toast({ title: "Password Reset Failed", description: "Confirmation email cannot be empty.", variant: "destructive" });
       return;
     }
 
     if (firstEmail.trim().toLowerCase() === secondEmail.trim().toLowerCase()) {
       toast({
-        title: "Password Reset Initiated",
-        description: `If this email address (${firstEmail.trim()}) is registered, password reset instructions will be sent.`,
+        title: "Email Confirmed",
+        description: `If this email address (${firstEmail.trim()}) is registered, a password reset token will be sent.`,
       });
-      // In a real app, you would trigger an API call here to send the reset email
+
+      // Simulate sending email and token process
+      const MOCK_TOKEN = "TOKEN123"; // In a real app, this would be generated and sent via email.
+
+      const enteredToken = window.prompt("A password reset token has been (notionally) sent to your email. Please enter the token here:");
+
+      if (enteredToken === null) {
+        toast({ title: "Password Reset Cancelled", description: "Token entry was cancelled.", variant: "destructive" });
+        return;
+      }
+      if (enteredToken.trim() === "") {
+        toast({ title: "Password Reset Failed", description: "Token cannot be empty.", variant: "destructive" });
+        return;
+      }
+
+      if (enteredToken.trim() === MOCK_TOKEN) {
+        const newPassword = window.prompt("Token verified. Please enter your new password:");
+        if (newPassword === null) {
+          toast({ title: "Password Reset Cancelled", description: "New password entry was cancelled.", variant: "destructive" });
+          return;
+        }
+        if (newPassword.trim() === "" || newPassword.trim().length < 8) {
+          toast({ title: "Password Reset Failed", description: "New password cannot be empty and must be at least 8 characters.", variant: "destructive" });
+          return;
+        }
+
+        const confirmNewPassword = window.prompt("Please confirm your new password:");
+        if (confirmNewPassword === null) {
+          toast({ title: "Password Reset Cancelled", description: "Password confirmation was cancelled.", variant: "destructive" });
+          return;
+        }
+
+        if (newPassword.trim() === confirmNewPassword.trim()) {
+          // In a real app, an API call would be made here to update the password
+          toast({
+            title: "Password Reset Successful",
+            description: "Your password has been updated. You can now log in with your new password.",
+          });
+        } else {
+          toast({
+            title: "Password Reset Failed",
+            description: "The new passwords do not match. Please try the 'Forgot Password' process again.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "Password Reset Failed",
+          description: "Invalid reset token. Please try the 'Forgot Password' process again.",
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: "Password Reset Failed",

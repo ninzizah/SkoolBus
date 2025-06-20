@@ -87,48 +87,83 @@ export default function SignupPage() {
   const handleForgotPasswordClick = () => {
     const firstEmail = window.prompt("Nyamuneka shyiramo email yawe yo guhindura ijambobanga:");
 
-    if (firstEmail === null) { // User cancelled the first prompt
-      toast({
-        title: "Guhindura Ijambobanga Byahagaritswe",
-        description: "Gusaba guhindura ijambobanga byahagaritswe.",
-      });
+    if (firstEmail === null) {
+      toast({ title: "Guhindura Ijambobanga Byahagaritswe", description: "Gusaba guhindura ijambobanga byahagaritswe." });
+      return;
+    }
+    if (firstEmail.trim() === "") {
+      toast({ title: "Guhindura Ijambobanga Byanze", description: "Email ntishobora kuba ubusa.", variant: "destructive" });
       return;
     }
 
-    if (firstEmail.trim() === "") { // User left first prompt empty
-      toast({
-        title: "Guhindura Ijambobanga Byanze",
-        description: "Email ntishobora kuba ubusa.",
-        variant: "destructive",
-      });
+    const secondEmail = window.prompt("Nyamuneka ongera ushyiremo email yawe kugira ngo wemeze:");
+
+    if (secondEmail === null) {
+      toast({ title: "Guhindura Ijambobanga Byahagaritswe", description: "Igikorwa cyo kwemeza email cyahagaritswe." });
       return;
     }
-
-    const secondEmail = window.prompt("Nyamuneka ongera ushyiremo email yawe y'umwimerere kugira ngo wemeze:");
-
-    if (secondEmail === null) { // User cancelled the second prompt
-      toast({
-        title: "Guhindura Ijambobanga Byahagaritswe",
-        description: "Igikorwa cyo kwemeza email cyahagaritswe.",
-      });
-      return;
-    }
-
-    if (secondEmail.trim() === "") { // User left second prompt empty
-      toast({
-        title: "Guhindura Ijambobanga Byanze",
-        description: "Email yo kwemeza ntishobora kuba ubusa.",
-        variant: "destructive",
-      });
+    if (secondEmail.trim() === "") {
+      toast({ title: "Guhindura Ijambobanga Byanze", description: "Email yo kwemeza ntishobora kuba ubusa.", variant: "destructive" });
       return;
     }
 
     if (firstEmail.trim().toLowerCase() === secondEmail.trim().toLowerCase()) {
       toast({
-        title: "Guhindura Ijambobanga Byatangiye",
-        description: `Niba iyi email (${firstEmail.trim()}) yanditswe, amabwiriza yo guhindura ijambobanga araza koherezwa.`,
+        title: "Email Yemejwe",
+        description: `Niba iyi email (${firstEmail.trim()}) yanditswe, agaciro ko guhindura ijambobanga (token) karaza koherezwa.`,
       });
-      // In a real app, you would trigger an API call here to send the reset email
+
+      // Simulate sending email and token process
+      const MOCK_TOKEN = "TOKEN123"; // In a real app, this would be generated and sent via email.
+
+      const enteredToken = window.prompt("Agaciro ko guhindura ijambobanga (token) (mu bitekerezo) koherejwe kuri email yawe. Nyamuneka shyiramo ako gaciro hano:");
+
+      if (enteredToken === null) {
+        toast({ title: "Guhindura Ijambobanga Byahagaritswe", description: "Kwinjiza agaciro byahagaritswe.", variant: "destructive" });
+        return;
+      }
+      if (enteredToken.trim() === "") {
+        toast({ title: "Guhindura Ijambobanga Byanze", description: "Agaciro ntigashobora kuba ubusa.", variant: "destructive" });
+        return;
+      }
+
+      if (enteredToken.trim() === MOCK_TOKEN) {
+        const newPassword = window.prompt("Agaciro kemejwe. Nyamuneka shyiramo ijambobanga rishya:");
+        if (newPassword === null) {
+          toast({ title: "Guhindura Ijambobanga Byahagaritswe", description: "Kwinjiza ijambobanga rishya byahagaritswe.", variant: "destructive" });
+          return;
+        }
+        if (newPassword.trim() === "" || newPassword.trim().length < 8) {
+          toast({ title: "Guhindura Ijambobanga Byanze", description: "Ijambobanga rishya ntirishobora kuba ubusa kandi rigomba kuba nibura inyuguti 8.", variant: "destructive" });
+          return;
+        }
+
+        const confirmNewPassword = window.prompt("Nyamuneka ongera wemeze ijambobanga rishya:");
+        if (confirmNewPassword === null) {
+          toast({ title: "Guhindura Ijambobanga Byahagaritswe", description: "Kwemeza ijambobanga byahagaritswe.", variant: "destructive" });
+          return;
+        }
+
+        if (newPassword.trim() === confirmNewPassword.trim()) {
+          // In a real app, an API call would be made here to update the password
+          toast({
+            title: "Ijambobanga Ryahinduwe Neza",
+            description: "Ijambobanga ryawe ryavuguruwe. Ushobora kwinjira ukoresheje ijambobanga rishya.",
+          });
+        } else {
+          toast({
+            title: "Guhindura Ijambobanga Byanze",
+            description: "Amajambobanga mashya ntabwo ahuye. Nyamuneka gerageza inzira yo 'Kwibagirwa ijambobanga' nanone.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "Guhindura Ijambobanga Byanze",
+          description: "Agaciro ko guhindura ijambobanga ntabwo kemewe. Nyamuneka gerageza inzira yo 'Kwibagirwa ijambobanga' nanone.",
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: "Guhindura Ijambobanga Byanze",
