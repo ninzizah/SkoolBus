@@ -85,22 +85,55 @@ export default function SignupPage() {
   }
 
   const handleForgotPasswordClick = () => {
-    const email = window.prompt("Nyamuneka shyiramo email yawe kugira ngo uhindure ijambobanga:");
-    if (email === null) { 
+    const firstEmail = window.prompt("Nyamuneka shyiramo email yawe yo guhindura ijambobanga:");
+
+    if (firstEmail === null) { // User cancelled the first prompt
       toast({
         title: "Guhindura Ijambobanga Byahagaritswe",
         description: "Gusaba guhindura ijambobanga byahagaritswe.",
       });
-    } else if (email.trim() === "") { 
-       toast({
-        title: "Guhindura Ijambobanga",
-        description: "Email ntishobora kuba ubusa mu guhindura ijambobanga.",
+      return;
+    }
+
+    if (firstEmail.trim() === "") { // User left first prompt empty
+      toast({
+        title: "Guhindura Ijambobanga Byanze",
+        description: "Email ntishobora kuba ubusa.",
         variant: "destructive",
       });
-    } else { 
+      return;
+    }
+
+    const secondEmail = window.prompt("Nyamuneka ongera ushyiremo email yawe y'umwimerere kugira ngo wemeze:");
+
+    if (secondEmail === null) { // User cancelled the second prompt
       toast({
-        title: "Guhindura Ijambobanga",
-        description: `Amabwiriza yo guhindura ijambobanga yoherejwe kuri: ${email}`,
+        title: "Guhindura Ijambobanga Byahagaritswe",
+        description: "Igikorwa cyo kwemeza email cyahagaritswe.",
+      });
+      return;
+    }
+
+    if (secondEmail.trim() === "") { // User left second prompt empty
+      toast({
+        title: "Guhindura Ijambobanga Byanze",
+        description: "Email yo kwemeza ntishobora kuba ubusa.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (firstEmail.trim().toLowerCase() === secondEmail.trim().toLowerCase()) {
+      toast({
+        title: "Guhindura Ijambobanga Byatangiye",
+        description: `Niba iyi email (${firstEmail.trim()}) yanditswe, amabwiriza yo guhindura ijambobanga araza koherezwa.`,
+      });
+      // In a real app, you would trigger an API call here to send the reset email
+    } else {
+      toast({
+        title: "Guhindura Ijambobanga Byanze",
+        description: "Ama email watanze ntabwo ahuye. Nyamuneka gerageza nanone.",
+        variant: "destructive",
       });
     }
   };

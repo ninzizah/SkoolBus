@@ -76,29 +76,62 @@ export default function LoginPage() {
   }
 
   const handleForgotPasswordClick = () => {
-    const email = window.prompt("Please enter your email address to reset your password:");
-    if (email === null) { // User clicked Cancel
+    const firstEmail = window.prompt("Please enter your email address to reset your password:");
+
+    if (firstEmail === null) { // User cancelled the first prompt
       toast({
         title: "Password Reset Cancelled",
         description: "Password reset request was cancelled.",
       });
-    } else if (email.trim() === "") { // User clicked OK but left it empty
-       toast({
-        title: "Password Reset",
-        description: "Email address cannot be empty for password reset.",
+      return;
+    }
+
+    if (firstEmail.trim() === "") { // User left first prompt empty
+      toast({
+        title: "Password Reset Failed",
+        description: "Email address cannot be empty.",
         variant: "destructive",
       });
-    } else { // User entered an email and clicked OK
+      return;
+    }
+
+    const secondEmail = window.prompt("Please re-enter your email address for confirmation:");
+
+    if (secondEmail === null) { // User cancelled the second prompt
       toast({
-        title: "Password Reset",
-        description: `Password reset instructions would be sent to: ${email}`,
+        title: "Password Reset Cancelled",
+        description: "Email confirmation process was cancelled.",
+      });
+      return;
+    }
+
+    if (secondEmail.trim() === "") { // User left second prompt empty
+      toast({
+        title: "Password Reset Failed",
+        description: "Confirmation email cannot be empty.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (firstEmail.trim().toLowerCase() === secondEmail.trim().toLowerCase()) {
+      toast({
+        title: "Password Reset Initiated",
+        description: `If this email address (${firstEmail.trim()}) is registered, password reset instructions will be sent.`,
+      });
+      // In a real app, you would trigger an API call here to send the reset email
+    } else {
+      toast({
+        title: "Password Reset Failed",
+        description: "The email addresses entered do not match. Please try again.",
+        variant: "destructive",
       });
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-6">
-      <div className="w-full max-w-md space-y-8 py-12"> {/* Added py-12 for some vertical spacing */}
+      <div className="w-full max-w-md space-y-8 py-12">
         <div className="text-center">
           <BusFront className="mx-auto h-16 w-16 text-primary mb-4" />
           <h1 className="text-3xl font-bold font-headline text-primary">
@@ -171,7 +204,7 @@ export default function LoginPage() {
             </Button>
             </p>
             <p>
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Button variant="link" asChild className="p-0 h-auto font-medium text-primary hover:underline">
                 <Link href="/">Create Account</Link>
             </Button>
