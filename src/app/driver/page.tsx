@@ -5,7 +5,9 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { MapPin, Users, CheckCircle, XCircle, AlertTriangle, Clock, ListChecks, Bus as BusIcon } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { MapPin, Users, CheckCircle, XCircle, AlertTriangle, Clock, ListChecks, Bus as BusIcon, CalendarDays } from 'lucide-react';
 import type { AssignedRoute, ChildAttendance, RouteStop } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -76,6 +78,7 @@ const SteeringWheelIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export default function DriverDashboardPage() {
   const [assignedRoute, setAssignedRoute] = useState<AssignedRoute>(initialMockRoute);
+  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const updateChildStatus = (stopId: string, childId: string, status: ChildAttendance['status']) => {
@@ -102,7 +105,7 @@ export default function DriverDashboardPage() {
   );
 
   const handleViewFullSchedule = () => {
-    toast({ title: "Feature Not Implemented", description: "Viewing the full schedule is coming soon!" });
+    setIsScheduleDialogOpen(true);
   };
 
   const handleReportIssue = () => {
@@ -267,8 +270,68 @@ export default function DriverDashboardPage() {
           </Card>
         </div>
       </div>
+
+      {/* Full Schedule Dialog */}
+      <Dialog open={isScheduleDialogOpen} onOpenChange={setIsScheduleDialogOpen}>
+        <DialogContent className="sm:max-w-lg md:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-headline flex items-center">
+              <CalendarDays className="mr-2 h-6 w-6 text-primary" /> Full Route Schedule: {assignedRoute.routeName}
+            </DialogTitle>
+            <DialogDescription>
+              Detailed view of all stops and children for the current route.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh] p-1">
+            <div className="space-y-6 py-4 px-2">
+              {assignedRoute.stops.map((stop, index) => (
+                <div key={stop.id} className="border-b pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-semibold text-primary flex items-center">
+                      <MapPin className="mr-2 h-5 w-5" /> Stop {index + 1}: {stop.name}
+                    </h3>
+                    <Badge variant="secondary">{stop.time}</Badge>
+                  </div>
+                  {stop.children.length > 0 ? (
+                    <ul className="space-y-2 pl-4">
+                      {stop.children.map((child) => (
+                        <li key={child.id} className="flex items-center justify-between text-sm p-2 rounded-md bg-muted/50">
+                          <span className="flex items-center">
+                            <Users className="mr-2 h-4 w-4 text-muted-foreground" />
+                            {child.name}
+                          </span>
+                          <Badge 
+                            variant={
+                              child.status === 'Picked Up' ? 'default' : 
+                              child.status === 'Dropped Off' ? 'secondary' : 'outline'
+                            } 
+                            className={
+                              child.status === 'Picked Up' ? 'bg-green-500 hover:bg-green-600 text-white' :
+                              child.status === 'Dropped Off' ? 'bg-blue-500 hover:bg-blue-600 text-white' : 
+                              'border-yellow-500 text-yellow-600'
+                            }
+                          >{child.status}</Badge>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="pl-4 text-sm text-muted-foreground italic">
+                      {stop.name.toLowerCase().includes('school') ? "Drop-off location." : "No children scheduled for this stop."}
+                    </p>
+                  )}
+                </div>
+              ))}
+              {assignedRoute.stops.length === 0 && (
+                 <p className="text-muted-foreground text-center py-8">No stops in this schedule.</p>
+              )}
+            </div>
+          </ScrollArea>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsScheduleDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
-
-    
