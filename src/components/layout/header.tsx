@@ -20,12 +20,12 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
 const navItems = [
-  { href: '/parents', label: 'Parents', icon: Users },
-  { href: '/children', label: 'Children', icon: Smile },
-  { href: '/tracking', label: 'Tracking', icon: MapPin },
-  { href: '/driver', label: 'Driver', icon: Gauge },
-  { href: '/school', label: 'School Portal', icon: SchoolIcon },
-  { href: '/admin/schools', label: 'System Admin', icon: Briefcase },
+  { href: '/parents', label: 'Ababyeyi', icon: Users },
+  { href: '/children', label: 'Abana', icon: Smile },
+  { href: '/tracking', label: 'Gukurikirana', icon: MapPin },
+  { href: '/driver', label: 'Umushoferi', icon: Gauge },
+  { href: '/school', label: 'Ishuri (Portal)', icon: SchoolIcon },
+  { href: '/admin/schools', label: 'Ubuyobozi', icon: Briefcase },
 ];
 
 interface MockNotification {
@@ -36,15 +36,16 @@ interface MockNotification {
   read: boolean;
   icon?: React.ElementType;
   type?: 'info' | 'warning' | 'success' | 'route' | 'system';
+  href?: string; // <-- New field for navigation
 }
 
 const initialMockNotifications: MockNotification[] = [
-  { id: 'n1', title: 'Route Delayed: Morning Star', description: 'Morning Star route is estimated to be 15 minutes late due to unexpected road closure on Elm St.', timestamp: '10m ago', read: false, icon: Clock, type: 'warning' },
-  { id: 'n2', title: 'Child Added: Mia W.', description: 'Mia Wonderland has been successfully assigned to "Morning Star Route". Parent notified.', timestamp: '30m ago', read: false, icon: UserPlus, type: 'info' },
-  { id: 'n3', title: 'Payment Confirmed', description: 'Your monthly subscription for SkoolBus services has been successfully renewed. Thank you!', timestamp: '2h ago', read: true, icon: CheckCircle, type: 'success' },
-  { id: 'n4', title: 'New School Policy Update', description: 'Wonderland Elementary has updated its early pick-up policy. Please review in the school portal.', timestamp: '1d ago', read: true, icon: SchoolIcon, type: 'system'},
-  { id: 'n5', title: 'Driver Alert: BUS-42 Maintenance', description: 'Reminder: Bus BUS-42 is scheduled for routine maintenance next Tuesday. Please coordinate with dispatch.', timestamp: '3h ago', read: false, icon: AlertTriangle, type: 'warning' },
-  { id: 'n6', title: 'Welcome to SkoolBus!', description: 'Your account setup is complete. Explore the dashboard to get started.', timestamp: '3d ago', read: true, icon: BusFront, type: 'info'}
+  { id: 'n1', title: 'Urugendo Rwakererewe: Umuseke', description: 'Urugendo rw\'Umuseke rushobora gukererwaho iminota 15 kubera umuhanda wafunzwe kuri KG 567 St.', timestamp: '10m ishize', read: false, icon: Clock, type: 'warning', href: '/tracking' },
+  { id: 'n2', title: 'Umwana Yongewemo: Ineza A.', description: 'Ineza Ange yongewe mu rugendo "GS Kacyiru Umuseke A". Umubyeyi yamenyeshejwe.', timestamp: '30m ishize', read: false, icon: UserPlus, type: 'info', href: '/children' },
+  { id: 'n3', title: 'Ubwishyu Bwemejwe', description: 'Ifatabuguzi ryawe rya buri kwezi rya SkoolBus ryemejwe neza. Murakoze!', timestamp: '2h ishize', read: true, icon: CheckCircle, type: 'success' },
+  { id: 'n4', title: 'Amabwiriza Mashya y\'Ishuri', description: 'Groupe Scolaire Kacyiru ryavuguruye amabwiriza yaryo yo gufata abana mbere y\'igihe. Nyamuneka reba mu ishyirahamwe ry\'ishuri.', timestamp: '1d ishize', read: true, icon: SchoolIcon, type: 'system', href: '/school'},
+  { id: 'n5', title: 'Ubutumwa bw\'Umushoferi: Imodoka RAD123B Ikeneye Gusuzumwa', description: 'Wibukijwe: Imodoka RAD123B iteganyijwe gusuzumwa kuwa kabiri utaha. Nyamuneka vugana n\'ababishinzwe.', timestamp: '3h ishize', read: false, icon: AlertTriangle, type: 'warning', href: '/driver' },
+  { id: 'n6', title: 'Murakaza neza kuri SkoolBus!', description: 'Konti yawe yafunguwe neza. Reba imbonerahamwe kugira ngo utangire.', timestamp: '3d ishize', read: true, icon: BusFront, type: 'info', href: '/dashboard'}
 ];
 
 
@@ -84,35 +85,39 @@ export function Header() {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
       setIsDarkMode(false);
-      toast({ title: "Theme Changed", description: "Switched to Light Mode." });
+      toast({ title: "Insanganyamatsiko Yahinduwe", description: "Wahinduye ujya ku nsanganyamatsiko y'umucyo." });
     } else {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
       setIsDarkMode(true);
-      toast({ title: "Theme Changed", description: "Switched to Dark Mode." });
+      toast({ title: "Insanganyamatsiko Yahinduwe", description: "Wahinduye ujya ku nsanganyamatsiko y'umwijima." });
     }
   };
 
   const handleLogout = () => {
      toast({
-      title: "Logged Out",
-      description: "You have been successfully logged out.",
+      title: "Mwasohotse",
+      description: "Mwasohotse neza muri konti yanyu.",
     });
     router.push('/login');
   }
 
-  const handleMarkNotificationAsRead = (id: string) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  const handleNotificationClick = (notification: MockNotification) => {
+    setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, read: true } : n));
+    if (notification.href) {
+      router.push(notification.href);
+    }
+    setIsNotificationsDialogOpen(false); // Close dialog after click/navigation
   };
 
   const handleMarkAllAsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-    toast({ title: "Notifications Updated", description: "All notifications marked as read." });
+    toast({ title: "Amenyesha Yavuguruwe", description: "Amenyesha yose yashyizweho ko yasomwe." });
   };
 
   const handleClearAllNotifications = () => {
     setNotifications([]);
-    toast({ title: "Notifications Cleared", description: "All notifications have been removed." });
+    toast({ title: "Amenyesha Yasibwe", description: "Amenyesha yose yakuweho." });
   };
 
   const getNotificationIcon = (notification: MockNotification) => {
@@ -147,7 +152,7 @@ export function Header() {
                 <Button 
                   variant="outline" 
                   size="icon" 
-                  aria-label="Account and Settings"
+                  aria-label="Konti n'Iboneza"
                   className="relative"
                 >
                   <Settings className="h-5 w-5" />
@@ -156,17 +161,17 @@ export function Header() {
                       variant="destructive" 
                       className="absolute -top-1 -right-1 h-4 w-4 min-w-4 p-0 flex items-center justify-center text-xs rounded-full"
                     >
-                      {unreadNotificationsCount}
+                      {unreadNotificationsCount > 9 ? "9+" : unreadNotificationsCount}
                     </Badge>
                   )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel>Konti Yanjye</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => router.push('/login')}>
                   <UserIcon className="mr-2 h-4 w-4" />
-                  <span>Profile / Login</span>
+                  <span>Umwirondoro / Injira</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleThemeToggle}>
                   {isDarkMode ? (
@@ -174,19 +179,19 @@ export function Header() {
                   ) : (
                     <Moon className="mr-2 h-4 w-4" />
                   )}
-                  <span>Toggle Theme</span>
+                  <span>Hindura Insanganyamatsiko</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setIsNotificationsDialogOpen(true)}>
                   <Bell className="mr-2 h-4 w-4" />
-                  <span>Notifications</span>
+                  <span>Amenyesha</span>
                   {unreadNotificationsCount > 0 && (
-                    <Badge variant="destructive" className="ml-auto">{unreadNotificationsCount}</Badge>
+                    <Badge variant="destructive" className="ml-auto">{unreadNotificationsCount > 9 ? "9+" : unreadNotificationsCount}</Badge>
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log Out</span>
+                  <span>Sohoka</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -198,18 +203,18 @@ export function Header() {
         <DialogContent className="sm:max-w-lg md:max-w-xl max-h-[80vh] flex flex-col">
           <DialogHeader>
             <DialogTitle className="font-headline flex items-center text-xl">
-              <Bell className="mr-2 h-6 w-6 text-primary"/> Notifications
+              <Bell className="mr-2 h-6 w-6 text-primary"/> Amenyesha
             </DialogTitle>
             <DialogDescription>
-              Review your recent alerts and updates.
+              Reba ubutumwa bwawe bwa vuba n'ibyakozwe.
             </DialogDescription>
           </DialogHeader>
           
-          <ScrollArea className="flex-grow pr-6 -mr-6"> {/* Added negative margin to offset scrollbar padding */}
+          <ScrollArea className="flex-grow pr-6 -mr-6">
             {notifications.length === 0 ? (
               <div className="text-center text-muted-foreground py-10">
                 <BookOpen className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
-                You have no new notifications.
+                Nta menyesha mashya ufite.
               </div>
             ) : (
               <div className="space-y-3 py-1">
@@ -217,7 +222,10 @@ export function Header() {
                   <div 
                     key={notification.id} 
                     className={`p-4 rounded-lg border flex items-start cursor-pointer hover:bg-muted/50 transition-colors ${notification.read ? 'bg-muted/30 border-border/50' : 'bg-card border-primary/30'}`}
-                    onClick={() => handleMarkNotificationAsRead(notification.id)}
+                    onClick={() => handleNotificationClick(notification)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleNotificationClick(notification);}}
                   >
                     {!notification.read && <div className="h-2 w-2 bg-accent rounded-full mr-3 mt-1.5 flex-shrink-0 animate-pulse"></div>}
                     {notification.read && <div className="h-2 w-2 bg-transparent rounded-full mr-3 mt-1.5 flex-shrink-0"></div>}
@@ -238,15 +246,15 @@ export function Header() {
             {notifications.length > 0 && (
               <>
                 <Button variant="outline" onClick={handleMarkAllAsRead} disabled={unreadNotificationsCount === 0}>
-                  Mark all as read
+                  Shyiraho ko Byasomwe Byose
                 </Button>
                 <Button variant="ghost" onClick={handleClearAllNotifications}>
-                  Clear All
+                  Siba Byose
                 </Button>
               </>
             )}
             <DialogClose asChild>
-              <Button variant="default">Close</Button>
+              <Button variant="default">Funga</Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>
@@ -254,3 +262,5 @@ export function Header() {
     </>
   );
 }
+
+    
