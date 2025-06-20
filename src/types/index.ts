@@ -24,7 +24,7 @@ export const childFormSchema = z.object({
   age: z.coerce.number().int().positive("Imyaka igomba kuba umubare usumba zeru.").min(1, "Imyaka igomba kuba nibura 1."),
   classGrade: z.string().min(1, "Umwaka/Ishami birakenewe."),
   photoDataUrl: z.string().optional().describe("Data URI y'ifoto y'umwana. Imiterere iteganyijwe: 'data:<mimetype>;base64,<encoded_data>'."),
-  parentId: z.string().min(1, "Guhitamo umubyeyi birakenewe."), // Changed from UUID
+  parentId: z.string().min(1, "Guhitamo umubyeyi birakenewe."),
   schoolId: z.string().min(1, "Guhitamo ishuri birakenewe."),
   assignedRouteId: z.string().optional(),
 });
@@ -43,33 +43,33 @@ export interface Child extends Omit<ChildFormData, 'photoDataUrl' | 'assignedRou
   assignedRouteId?: string;
   assignedRouteName?: string;
   lastAttendanceStatus?: ChildAttendanceStatus;
-  lastAttendanceTimestamp?: string; // e.g., "2024-07-30 08:15 AM"
+  lastAttendanceTimestamp?: string;
 }
 
 // Bus Route Types
 export interface BusRoute {
   id: string;
   name: string;
-  pickupTime: string; // e.g., "07:30 AM"
+  pickupTime: string;
   driverName: string;
 }
 
 // Driver Dashboard Types
 export interface ChildAttendance {
-  id: string; // Child's ID
+  id: string;
   name: string;
   status: ChildAttendanceStatus;
 }
 export interface RouteStop {
-  id: string; 
-  name: string; // e.g., "KG 123 St" or "Lycee de Kigali"
-  time: string; // e.g., "07:15 AM"
-  children: ChildAttendance[]; 
+  id: string;
+  name: string;
+  time: string;
+  children: ChildAttendance[];
 }
 
 export interface AssignedRoute {
-  id: string; 
-  routeName: string; // e.g., "Urugendo A - Mu Gitondo"
+  id: string;
+  routeName: string;
   driverName: string;
   busNumber: string;
   stops: RouteStop[];
@@ -104,6 +104,26 @@ export type SignupFormData = z.infer<typeof signupFormSchema>;
 // Login Schemas and Types
 export const loginFormSchema = z.object({
   email: z.string().email("Email ntiyemewe."),
-  password: z.string().min(1, "Ijambobanga rirakenewe."), 
+  password: z.string().min(1, "Ijambobanga rirakenewe."),
 });
 export type LoginFormData = z.infer<typeof loginFormSchema>;
+
+// Forgot Password Schemas
+export const forgotPasswordEmailSchema = z.object({
+  email: z.string().email({ message: "Email ntiyemewe." }),
+});
+export type ForgotPasswordEmailFormData = z.infer<typeof forgotPasswordEmailSchema>;
+
+export const forgotPasswordTokenSchema = z.object({
+  token: z.string().min(1, { message: "Agaciro karakenewe." }),
+});
+export type ForgotPasswordTokenFormData = z.infer<typeof forgotPasswordTokenSchema>;
+
+export const forgotPasswordNewPasswordSchema = z.object({
+  newPassword: z.string().min(8, { message: "Ijambobanga rigomba kuba nibura inyuguti 8." }),
+  confirmNewPassword: z.string().min(8, { message: "Kwemeza ijambobanga rigomba kuba nibura inyuguti 8." }),
+}).refine(data => data.newPassword === data.confirmNewPassword, {
+  message: "Amajambobanga ntabwo ahuye.",
+  path: ["confirmNewPassword"],
+});
+export type ForgotPasswordNewPasswordFormData = z.infer<typeof forgotPasswordNewPasswordSchema>;

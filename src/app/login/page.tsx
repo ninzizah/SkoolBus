@@ -14,238 +14,294 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import type { LoginFormData } from '@/types';
-import { loginFormSchema } from '@/types';
-import { Loader2, BusFront, LogIn } from "lucide-react";
+import type { LoginFormData, ForgotPasswordEmailFormData, ForgotPasswordTokenFormData, ForgotPasswordNewPasswordFormData } from '@/types';
+import { loginFormSchema, forgotPasswordEmailSchema, forgotPasswordTokenSchema, forgotPasswordNewPasswordSchema } from '@/types';
+import { Loader2, BusFront, LogIn, Mail, KeyRound, ShieldCheck } from "lucide-react";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-// Mock server action for logging in a user
 async function loginUserAction(data: LoginFormData): Promise<{ success: boolean; message: string }> {
   console.log("Logging in user:", data);
-  // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 1000));
-  // Simulate success/failure
   if (data.email.toLowerCase().includes("error@example.com")) {
     return { success: false, message: "Invalid email or password." };
   }
   return { success: true, message: `Welcome back!` };
 }
 
+const MOCK_TOKEN = "TOKEN123";
+
 export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isForgotPasswordDialogOpen, setIsForgotPasswordDialogOpen] = React.useState(false);
+  const [forgotPasswordPhase, setForgotPasswordPhase] = React.useState<'email' | 'token' | 'newPassword'>('email');
+  const [resetEmail, setResetEmail] = React.useState<string | null>(null);
 
-  const form = useForm<LoginFormData>({
+  const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
-  async function onSubmit(data: LoginFormData) {
+  const forgotPasswordEmailForm = useForm<ForgotPasswordEmailFormData>({
+    resolver: zodResolver(forgotPasswordEmailSchema),
+    defaultValues: { email: "" },
+  });
+
+  const forgotPasswordTokenForm = useForm<ForgotPasswordTokenFormData>({
+    resolver: zodResolver(forgotPasswordTokenSchema),
+    defaultValues: { token: "" },
+  });
+
+  const forgotPasswordNewPasswordForm = useForm<ForgotPasswordNewPasswordFormData>({
+    resolver: zodResolver(forgotPasswordNewPasswordSchema),
+    defaultValues: { newPassword: "", confirmNewPassword: "" },
+  });
+
+
+  async function onLoginSubmit(data: LoginFormData) {
     setIsSubmitting(true);
     try {
       const result = await loginUserAction(data);
       if (result.success) {
-        toast({
-          title: "Login Successful",
-          description: result.message,
-        });
-        // In a real app, you'd likely set some auth state here
+        toast({ title: "Login Successful", description: result.message });
         router.push('/dashboard');
       } else {
-        toast({
-          title: "Login Failed",
-          description: result.message || "An unknown error occurred.",
-          variant: "destructive",
-        });
+        toast({ title: "Login Failed", description: result.message || "An unknown error occurred.", variant: "destructive" });
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "An unexpected error occurred. Please try again.", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
   }
 
-  const handleForgotPasswordClick = () => {
-    const firstEmail = window.prompt("Please enter your email address to reset your password:");
-
-    if (firstEmail === null) {
-      toast({ title: "Password Reset Cancelled", description: "Password reset request was cancelled." });
-      return;
-    }
-    if (firstEmail.trim() === "") {
-      toast({ title: "Password Reset Failed", description: "Email address cannot be empty.", variant: "destructive" });
-      return;
-    }
-
-    const secondEmail = window.prompt("Please re-enter your email address for confirmation:");
-
-    if (secondEmail === null) {
-      toast({ title: "Password Reset Cancelled", description: "Email confirmation process was cancelled." });
-      return;
-    }
-    if (secondEmail.trim() === "") {
-      toast({ title: "Password Reset Failed", description: "Confirmation email cannot be empty.", variant: "destructive" });
-      return;
-    }
-
-    if (firstEmail.trim().toLowerCase() === secondEmail.trim().toLowerCase()) {
-      toast({
-        title: "Email Confirmed",
-        description: `If this email address (${firstEmail.trim()}) is registered, a password reset token will be sent.`,
-      });
-
-      // Simulate sending email and token process
-      const MOCK_TOKEN = "TOKEN123"; // In a real app, this would be generated and sent via email.
-
-      const enteredToken = window.prompt("A password reset token has been (notionally) sent to your email. Please enter the token here:");
-
-      if (enteredToken === null) {
-        toast({ title: "Password Reset Cancelled", description: "Token entry was cancelled.", variant: "destructive" });
-        return;
-      }
-      if (enteredToken.trim() === "") {
-        toast({ title: "Password Reset Failed", description: "Token cannot be empty.", variant: "destructive" });
-        return;
-      }
-
-      if (enteredToken.trim() === MOCK_TOKEN) {
-        const newPassword = window.prompt("Token verified. Please enter your new password:");
-        if (newPassword === null) {
-          toast({ title: "Password Reset Cancelled", description: "New password entry was cancelled.", variant: "destructive" });
-          return;
-        }
-        if (newPassword.trim() === "" || newPassword.trim().length < 8) {
-          toast({ title: "Password Reset Failed", description: "New password cannot be empty and must be at least 8 characters.", variant: "destructive" });
-          return;
-        }
-
-        const confirmNewPassword = window.prompt("Please confirm your new password:");
-        if (confirmNewPassword === null) {
-          toast({ title: "Password Reset Cancelled", description: "Password confirmation was cancelled.", variant: "destructive" });
-          return;
-        }
-
-        if (newPassword.trim() === confirmNewPassword.trim()) {
-          // In a real app, an API call would be made here to update the password
-          toast({
-            title: "Password Reset Successful",
-            description: "Your password has been updated. You can now log in with your new password.",
-          });
-        } else {
-          toast({
-            title: "Password Reset Failed",
-            description: "The new passwords do not match. Please try the 'Forgot Password' process again.",
-            variant: "destructive",
-          });
-        }
-      } else {
-        toast({
-          title: "Password Reset Failed",
-          description: "Invalid reset token. Please try the 'Forgot Password' process again.",
-          variant: "destructive",
-        });
-      }
-    } else {
-      toast({
-        title: "Password Reset Failed",
-        description: "The email addresses entered do not match. Please try again.",
-        variant: "destructive",
-      });
-    }
+  const handleOpenForgotPasswordDialog = () => {
+    setForgotPasswordPhase('email');
+    forgotPasswordEmailForm.reset();
+    forgotPasswordTokenForm.reset();
+    forgotPasswordNewPasswordForm.reset();
+    setResetEmail(null);
+    setIsForgotPasswordDialogOpen(true);
   };
 
+  async function onForgotPasswordEmailSubmit(data: ForgotPasswordEmailFormData) {
+    setResetEmail(data.email);
+    // Simulate sending token
+    await new Promise(resolve => setTimeout(resolve, 500));
+    toast({
+      title: "Token Sent (Simulated)",
+      description: `If ${data.email} is a registered account, a password reset token has been sent.`,
+    });
+    setForgotPasswordPhase('token');
+  }
+
+  async function onForgotPasswordTokenSubmit(data: ForgotPasswordTokenFormData) {
+    // Simulate token verification
+    await new Promise(resolve => setTimeout(resolve, 500));
+    if (data.token === MOCK_TOKEN) {
+      toast({ title: "Token Verified", description: "Please set your new password." });
+      setForgotPasswordPhase('newPassword');
+    } else {
+      forgotPasswordTokenForm.setError("token", { type: "manual", message: "Invalid or expired token." });
+      toast({ title: "Token Verification Failed", description: "The token entered is invalid. Please try again.", variant: "destructive" });
+    }
+  }
+
+  async function onForgotPasswordNewPasswordSubmit(data: ForgotPasswordNewPasswordFormData) {
+    // Simulate password update
+    await new Promise(resolve => setTimeout(resolve, 500));
+    toast({
+      title: "Password Reset Successful",
+      description: "Your password has been updated. You can now log in with your new password.",
+    });
+    setIsForgotPasswordDialogOpen(false);
+  }
+  
+  const getDialogTitle = () => {
+    if (forgotPasswordPhase === 'email') return "Find your SkoolBus Account";
+    if (forgotPasswordPhase === 'token') return "Enter Password Reset Token";
+    return "Set New Password";
+  };
+
+  const getDialogDescription = () => {
+    if (forgotPasswordPhase === 'email') return "Enter the email associated with your account to change your password.";
+    if (forgotPasswordPhase === 'token') return `A password reset token was (notionally) sent to ${resetEmail || 'your email'}. Please enter it here. (Hint: try "TOKEN123")`;
+    return "Token verified. Please set your new password.";
+  };
+
+  const getDialogIcon = () => {
+    if (forgotPasswordPhase === 'email') return <Mail className="mx-auto h-10 w-10 text-primary mb-3" />;
+    if (forgotPasswordPhase === 'token') return <KeyRound className="mx-auto h-10 w-10 text-primary mb-3" />;
+    return <ShieldCheck className="mx-auto h-10 w-10 text-primary mb-3" />;
+  };
+
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-6">
-      <div className="w-full max-w-md space-y-8 py-12">
-        <div className="text-center">
-          <BusFront className="mx-auto h-16 w-16 text-primary mb-4" />
-          <h1 className="text-3xl font-bold font-headline text-primary">
-            Log In to SkoolBus
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Welcome back! Please enter your credentials.
-          </p>
-        </div>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-card p-8 rounded-lg shadow-xl">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email Address</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="e.g., you@example.com"
-                      {...field}
-                      autoComplete="email"
-                      suppressHydrationWarning={true}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      {...field}
-                      autoComplete="current-password"
-                      suppressHydrationWarning={true}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Logging In...
-                </>
-              ) : (
-                <>
-                  <LogIn className="mr-2 h-4 w-4" /> Log In
-                </>
-              )}
-            </Button>
-          </form>
-        </Form>
-
-        <div className="text-center text-sm text-muted-foreground space-y-1">
-            <p>
-            <Button variant="link" onClick={handleForgotPasswordClick} className="p-0 h-auto font-medium text-primary hover:underline">
-                Forgot Password?
-            </Button>
+    <>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background p-6">
+        <div className="w-full max-w-md space-y-8 py-12">
+          <div className="text-center">
+            <BusFront className="mx-auto h-16 w-16 text-primary mb-4" />
+            <h1 className="text-3xl font-bold font-headline text-primary">
+              Log In to SkoolBus
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Welcome back! Please enter your credentials.
             </p>
-            <p>
-            Don&apos;t have an account?{' '}
-            <Button variant="link" asChild className="p-0 h-auto font-medium text-primary hover:underline">
-                <Link href="/">Create Account</Link>
-            </Button>
-            </p>
+          </div>
+
+          <Form {...loginForm}>
+            <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6 bg-card p-8 rounded-lg shadow-xl">
+              <FormField
+                control={loginForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="e.g., you@example.com" {...field} autoComplete="email" suppressHydrationWarning={true}/>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={loginForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="••••••••" {...field} autoComplete="current-password" suppressHydrationWarning={true}/>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isSubmitting}>
+                {isSubmitting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Logging In...</>) : (<><LogIn className="mr-2 h-4 w-4" /> Log In</>)}
+              </Button>
+            </form>
+          </Form>
+
+          <div className="text-center text-sm text-muted-foreground space-y-1">
+              <p>
+                <Button variant="link" onClick={handleOpenForgotPasswordDialog} className="p-0 h-auto font-medium text-primary hover:underline">
+                    Forgot Password?
+                </Button>
+              </p>
+              <p>
+              Don&apos;t have an account?{' '}
+              <Button variant="link" asChild className="p-0 h-auto font-medium text-primary hover:underline">
+                  <Link href="/">Create Account</Link>
+              </Button>
+              </p>
+          </div>
         </div>
       </div>
-    </div>
+
+      <Dialog open={isForgotPasswordDialogOpen} onOpenChange={setIsForgotPasswordDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="text-center">
+            {getDialogIcon()}
+            <DialogTitle className="text-2xl font-bold font-headline">{getDialogTitle()}</DialogTitle>
+            <DialogDescription>{getDialogDescription()}</DialogDescription>
+          </DialogHeader>
+          
+          {forgotPasswordPhase === 'email' && (
+            <Form {...forgotPasswordEmailForm}>
+              <form onSubmit={forgotPasswordEmailForm.handleSubmit(onForgotPasswordEmailSubmit)} className="space-y-4 py-4">
+                <FormField
+                  control={forgotPasswordEmailForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Enter your email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" disabled={forgotPasswordEmailForm.formState.isSubmitting}>
+                  {forgotPasswordEmailForm.formState.isSubmitting ? <Loader2 className="animate-spin" /> : "Next"}
+                </Button>
+              </form>
+            </Form>
+          )}
+
+          {forgotPasswordPhase === 'token' && (
+            <Form {...forgotPasswordTokenForm}>
+              <form onSubmit={forgotPasswordTokenForm.handleSubmit(onForgotPasswordTokenSubmit)} className="space-y-4 py-4">
+                <FormField
+                  control={forgotPasswordTokenForm.control}
+                  name="token"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Token</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter token from email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" disabled={forgotPasswordTokenForm.formState.isSubmitting}>
+                  {forgotPasswordTokenForm.formState.isSubmitting ? <Loader2 className="animate-spin" /> : "Verify Token"}
+                </Button>
+              </form>
+            </Form>
+          )}
+
+          {forgotPasswordPhase === 'newPassword' && (
+            <Form {...forgotPasswordNewPasswordForm}>
+              <form onSubmit={forgotPasswordNewPasswordForm.handleSubmit(onForgotPasswordNewPasswordSubmit)} className="space-y-4 py-4">
+                <FormField
+                  control={forgotPasswordNewPasswordForm.control}
+                  name="newPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>New Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="Enter new password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={forgotPasswordNewPasswordForm.control}
+                  name="confirmNewPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm New Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="Confirm new password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" disabled={forgotPasswordNewPasswordForm.formState.isSubmitting}>
+                 {forgotPasswordNewPasswordForm.formState.isSubmitting ? <Loader2 className="animate-spin" /> : "Change Password"}
+                </Button>
+              </form>
+            </Form>
+          )}
+          <DialogFooter className="sm:justify-start">
+              <DialogClose asChild>
+                <Button type="button" variant="ghost">
+                  Cancel
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
