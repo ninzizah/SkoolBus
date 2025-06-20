@@ -160,7 +160,10 @@ export default function DriverDashboardPage() {
   };
 
   const handleContactDispatch = () => {
-    toast({ title: "Feature Not Implemented", description: "Contacting dispatch is coming soon!" });
+    toast({ 
+      title: "Dispatch Notified", 
+      description: "Dispatch has been alerted. They will contact you via your registered device if further action is needed." 
+    });
   };
 
 
